@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">GymApp</string>
+
+    <!-- Main screen strings -->
+    <string name="plan_creator_title">Create your training plan</string>
+    <string name="hint_days_per_week">Training days per week (1-7)</string>
+    <string name="hint_weeks">Number of weeks (1-52)</string>
+    <string name="btn_create_plan">Create plan</string>
+    <string name="operation_canceled">Operation canceled</string>
+
+    <!-- Second screen strings -->
+    <string name="confirm_and_return">Confirm and return</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Format strings -->
+    <string name="summary_text">You have selected a training program of %1$d days per week, for %2$d weeks (%3$d sessions).</string>
+</resources>
