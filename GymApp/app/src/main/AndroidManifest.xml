@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GymApp">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PlanConfirmActivity"
+            android:name=".ui.PlanConfirmActivity"
             android:exported="false" />
     </application>
 
