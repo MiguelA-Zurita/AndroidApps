@@ -25,26 +25,11 @@ class PlanConfirmActivity : AppCompatActivity() {
         }
 
         tvSummary = findViewById(R.id.tvSummary)
-        val btnConfirm: Button = findViewById(R.id.btnConfirm)
-        val btnCancel: Button = findViewById(R.id.btnCancel)
 
         val days = intent.getIntExtra(MainActivity.EXTRA_DAYS, 0)
         val weeks = intent.getIntExtra(MainActivity.EXTRA_WEEKS, 0)
         val sessions = days * weeks
         val summary = getString(R.string.summary_text, days, weeks, sessions)
         tvSummary.text = summary
-
-        btnConfirm.setOnClickListener {
-            val data = Intent().apply {
-                putExtra(MainActivity.EXTRA_SUMMARY, summary)
-            }
-            setResult(Activity.RESULT_OK, data)
-            finish()
-        }
-
-        btnCancel.setOnClickListener {
-            setResult(Activity.RESULT_CANCELED)
-            finish()
-        }
     }
 }
