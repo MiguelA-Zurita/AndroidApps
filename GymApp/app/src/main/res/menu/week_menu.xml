@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="fab_different_weeks"
+        android:title="@string/fab_different_weeks"/>
+    <item
+        android:id="fab_equal_weeks"
+        android:title="@string/fab_equal_weeks"/>
+</menu>

@@ -7,7 +7,7 @@ class ControllerExerciseList {
     fun getExerciseList(len: Int): List<ExerciseList> {
 
 
-     var listaEj: List<ExerciseList> = emptyList()
+     val listaEj: MutableList<ExerciseList> = emptyList<ExerciseList>().toMutableList();
      for (i in 1..len){
          val ejercicio = ExerciseList(
              Imagen = R.drawable.bulgara,
@@ -17,11 +17,5 @@ class ControllerExerciseList {
          listaEj += ejercicio
      }
         return listaEj
-        //listOf(
-        //ExerciseList(
-        //    Imagen = R.drawable.bulgara,
-        //    Titulo = "Bulgara",
-        //    Descripcion = "haces una bulgara"
-        //))
     }
 }

@@ -12,6 +12,8 @@
     <string name="confirm_and_return">Confirmar y volver</string>
     <string name="cancel">Cancelar</string>
     <string name="exercise_list_title">Lista de ejercicios</string>
+    <string name="fab_different_weeks">Semanas diferentes</string>
+    <string name="fab_equal_weeks">Semanas iguales</string>
 
     <!-- Format strings -->
     <string name="summary_text">Has seleccionado el plan de entrenamiento de %1$d dias por semana, por %2$d semanas (%3$d sesiones).</string>

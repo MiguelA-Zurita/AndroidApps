@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,6 +13,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.gymapp.ui.PlanConfirmActivity
 import com.example.gymapp.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,7 +45,9 @@ class MainActivity : AppCompatActivity() {
         etDays = findViewById(R.id.etDays)
         etWeeks = findViewById(R.id.etWeeks)
         tvResult = findViewById(R.id.tvResult)
+
         val btnCreate: Button = findViewById(R.id.btnCreatePlan)
+        val fabWeekSelection: FloatingActionButton = findViewById<FloatingActionButton>(R.id.fab_week_selection);
 
         btnCreate.setOnClickListener {
             val daysStr = etDays.text?.toString()?.trim().orEmpty()
@@ -77,6 +81,10 @@ class MainActivity : AppCompatActivity() {
                 putExtra(EXTRA_WEEKS, weeks)
             }
             confirmLauncher.launch(intent)
+        }
+        fabWeekSelection.setOnClickListener { view ->
+            val popUp = PopupMenu(this, view);
+            //popUp.menuInflater.inflate()
         }
     }
 
