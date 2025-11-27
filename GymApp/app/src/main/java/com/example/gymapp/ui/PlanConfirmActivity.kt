@@ -6,7 +6,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.example.gymapp.R
+import com.example.gymapp.model.ExerciseList
 
 class PlanConfirmActivity : AppCompatActivity() {
 
@@ -29,5 +31,8 @@ class PlanConfirmActivity : AppCompatActivity() {
         val sessions = days * weeks
         val summary = getString(R.string.summary_text, days, weeks, sessions)
         tvSummary.text = summary
+
+        val rvExerciseList = findViewById<RecyclerView>(R.id.rvExerciseList)
+
     }
 }
