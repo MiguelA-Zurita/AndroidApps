@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<item
+    android:id="@+id/nav_activate_plan"
+    android:title="@string/nav_activate_plan"/>
+    <item
+        android:id="@+id/nav_register_exercise"
+        android:title="@string/nav_register_exercise"/>
+    <item
+        android:id="@+id/nav_modify_exercise"
+        android:title="@string/nav_modify_exercise"/>
+</menu>

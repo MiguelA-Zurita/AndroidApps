@@ -12,9 +12,25 @@
     <string name="confirm_and_return">Confirmar y volver</string>
     <string name="cancel">Cancelar</string>
     <string name="exercise_list_title">Lista de ejercicios</string>
+
+    <!-- fab strings-->
     <string name="fab_different_weeks">Semanas diferentes</string>
     <string name="fab_equal_weeks">Semanas iguales</string>
 
     <!-- Format strings -->
     <string name="summary_text">Has seleccionado el plan de entrenamiento de %1$d dias por semana, por %2$d semanas (%3$d sesiones).</string>
-</resources>
+    <!-- RecyclerView strings -->
+        <string name="rv_title">Ejercicio:</string>
+        <string name="rv_desc">Haces el ejercicio</string>
+
+    <!-- TableLayou strings-->
+    <string name="tl_list">Lista de ejercicios</string>
+    <string name="tl_registered_exercises">Lista de ejercicios registrados</string>
+    <string name="tl_exercise_evolution">Evolución de ejercicios</string>
+    <string name="tl_plan_statistics">Estadisticas de ejercicios</string>
+    <!-- navLayout strings-->
+    <string name="nav_activate_plan">Activar plan de ejercicios</string>
+    <string name="nav_register_exercise">Registrar ejercicio</string>
+    <string name="nav_modify_exercise">Modificar ejercicios registrados</string>
+
+    </resources>

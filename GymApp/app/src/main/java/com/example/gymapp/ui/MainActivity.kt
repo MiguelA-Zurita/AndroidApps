@@ -5,10 +5,8 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.PopupMenu
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -19,18 +17,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var etDays: EditText
     private lateinit var etWeeks: EditText
-    private lateinit var tvResult: TextView
-
-    private val confirmLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val summary = result.data?.getStringExtra(EXTRA_SUMMARY).orEmpty()
-            tvResult.text = summary
-        } else {
-            tvResult.text = getString(R.string.operation_canceled)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +30,6 @@ class MainActivity : AppCompatActivity() {
 
         etDays = findViewById(R.id.etDays)
         etWeeks = findViewById(R.id.etWeeks)
-        tvResult = findViewById(R.id.tvResult)
 
         val btnCreate: Button = findViewById(R.id.btnCreatePlan)
         val fabWeekSelection: FloatingActionButton = findViewById(R.id.fab_week_selection)
@@ -53,7 +38,6 @@ class MainActivity : AppCompatActivity() {
             if (!validateFields()) {
                 return@setOnClickListener
             }
-
             val days = etDays.text?.toString()?.trim().orEmpty().toIntOrNull()
             val weeks = etWeeks.text?.toString()?.trim().orEmpty().toIntOrNull()
 
@@ -61,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                 putExtra(EXTRA_DAYS, days)
                 putExtra(EXTRA_WEEKS, weeks)
             }
-            confirmLauncher.launch(intent)
+            startActivity(intent)
         }
 
         fabWeekSelection.setOnClickListener { view ->
@@ -81,7 +65,7 @@ class MainActivity : AppCompatActivity() {
                             putExtra(EXTRA_DAYS, days)
                             putExtra(EXTRA_WEEKS, weeks)
                         }
-                        confirmLauncher.launch(intent)
+                        startActivity(intent)
                         true
                     }
                     R.id.fab_equal_weeks -> {
@@ -96,7 +80,7 @@ class MainActivity : AppCompatActivity() {
                             putExtra(EXTRA_DAYS, days)
                             putExtra(EXTRA_WEEKS, weeks)
                         }
-                        confirmLauncher.launch(intent)
+                        startActivity(intent)
                         true
                     }
                     else -> false
@@ -106,7 +90,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun validateFields(): Boolean {
+    private fun validateFields(): Boolean {
         val daysStr = etDays.text?.toString()?.trim().orEmpty()
         val weeksStr = etWeeks.text?.toString()?.trim().orEmpty()
 
@@ -127,12 +111,12 @@ class MainActivity : AppCompatActivity() {
 
         if (days == null || days !in 1..7) {
             etDays.error = getString(R.string.hint_days_per_week)
-            valid = false;
+            valid = false
         }
 
         if (weeks == null || weeks !in 1..52) {
             etWeeks.error = getString(R.string.hint_weeks)
-            valid = false;
+            valid = false
         }
         return valid
 

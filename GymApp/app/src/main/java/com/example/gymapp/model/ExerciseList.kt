@@ -1,7 +1,7 @@
 package com.example.gymapp.model
 
 data class ExerciseList (
-    val Imagen: Int,
-    var Titulo: String,
-    val Descripcion: String
+    val imagen: Int,
+    var titulo: String,
+    val descripcion: String
 )
