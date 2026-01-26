@@ -6,7 +6,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
 import com.example.gymapp.R
 import kotlinx.coroutines.launch
@@ -14,9 +16,11 @@ import kotlinx.coroutines.launch
 class LoginActivity : AppCompatActivity() {
     private lateinit var etUsername: EditText
     private lateinit var etPassword: EditText
-    private val AppCompatActivity.dataStore by userCredentials(
+    private val AppCompatActivity.dataStore by preferencesDataStore(
         name = "user_credentials"
     )
+    private val userKey = stringPreferencesKey("username")
+    private val pssKey = stringPreferencesKey("password")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -36,8 +40,8 @@ class LoginActivity : AppCompatActivity() {
             if (validateFields(username, userpass)){
                 lifecycleScope.launch {
                     dataStore.edit { preferences ->
-                        preferences[userKey] = etKey1.text.toString()
-                        preferences[pssKey] = etKey2.text.toString()
+                        preferences[userKey] = username
+                        preferences[pssKey] = userpass
                     }
                 }
             }
@@ -46,7 +50,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun validateFields(username: String, password: String): Boolean {
-
         return (username != "" &&
                 username.isNotEmpty() &&
                 password != "" &&
