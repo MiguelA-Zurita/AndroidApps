@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -13,8 +14,6 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
 import com.example.gymapp.R
-import com.example.gymapp.ui.MainActivity.Companion.EXTRA_DAYS
-import com.example.gymapp.ui.MainActivity.Companion.EXTRA_WEEKS
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -36,16 +35,29 @@ class LoginActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        lifecycleScope.launch {
-            val preferences = dataStore.data.first()
-            if (!preferences[userKey].toString().isBlank() and
-                !preferences[pssKey].toString().isBlank()) {
-                    launchMain()
-            }
-        }
+
 
         val btnLogin: Button = findViewById(R.id.btn_login)
         btnLogin.setOnClickListener {
+            etUsername = findViewById(R.id.et_login_username)
+            etPassword = findViewById(R.id.et_login_password)
+            val username = etUsername.text.toString()
+            val userpass = etPassword.text.toString()
+            if (validateFields(username, userpass)) {
+                lifecycleScope.launch {
+                    val preferences = dataStore.data.first()
+                    if (username == preferences[userKey] && userpass == preferences[pssKey]) {
+                        Toast.makeText(this@LoginActivity, "Logged in successfully", Toast.LENGTH_SHORT).show()
+                        launchMain()
+                    } else{
+                        Toast.makeText(this@LoginActivity, "Usernme or password incorrect", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+
+        val btnRegister: Button = findViewById(R.id.btn_register)
+        btnRegister.setOnClickListener {
             etUsername = findViewById(R.id.et_login_username)
             etPassword = findViewById(R.id.et_login_password)
             val username = etUsername.text.toString()
@@ -57,6 +69,7 @@ class LoginActivity : AppCompatActivity() {
                         preferences[pssKey] = userpass
                     }
                 }
+                launchMain()
             }
         }
     }

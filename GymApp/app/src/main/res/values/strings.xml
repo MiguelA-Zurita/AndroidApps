@@ -35,9 +35,10 @@
     <string name="nav_modify_exercise">Modificar ejercicios registrados</string>
     <!-- Login strings-->
     <string name="tv_login_title">Pantalla login</string>
-    <string name="et_username_hint">Nombre de usuario</string>
+    <string name="et_username_hint">Usuario</string>
     <string name="et_password_hint">Contraseña</string>
-    <string name="btn_login_hint">login</string>
+    <string name="btn_login_hint">Login</string>
+    <string name="btn_register_hint">Registrar</string>
 
 
     </resources>
