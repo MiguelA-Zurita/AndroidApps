@@ -6,4 +6,7 @@
     <item
         android:id="@+id/fab_equal_weeks"
         android:title="@string/fab_equal_weeks"/>
+    <item
+        android:id="@+id/fab_close_session"
+        android:title="@string/fab_close_session"/>
 </menu>

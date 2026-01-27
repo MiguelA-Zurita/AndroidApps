@@ -52,9 +52,10 @@ class MainActivity : AppCompatActivity() {
             val popUp = PopupMenu(this, view)
             popUp.menuInflater.inflate(R.menu.week_menu, popUp.menu)
             popUp.setOnMenuItemClickListener { menuItem ->
-                when(menuItem.itemId){
-                    R.id.fab_different_weeks ->{
-                        Toast.makeText(this, R.string.fab_different_weeks, Toast.LENGTH_SHORT).show()
+                when (menuItem.itemId) {
+                    R.id.fab_different_weeks -> {
+                        Toast.makeText(this, R.string.fab_different_weeks, Toast.LENGTH_SHORT)
+                            .show()
                         if (!validateFields()) {
                             false
                         }
@@ -68,6 +69,7 @@ class MainActivity : AppCompatActivity() {
                         startActivity(intent)
                         true
                     }
+
                     R.id.fab_equal_weeks -> {
                         Toast.makeText(this, R.string.fab_equal_weeks, Toast.LENGTH_SHORT).show()
                         if (!validateFields()) {
@@ -83,6 +85,13 @@ class MainActivity : AppCompatActivity() {
                         startActivity(intent)
                         true
                     }
+                    R.id.fab_close_session ->{
+                        Toast.makeText(this, R.string.fab_close_session, Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this, LoginActivity::class.java)
+                        startActivity(intent)
+                        true
+                    }
+
                     else -> false
                 }
             }
@@ -121,6 +130,7 @@ class MainActivity : AppCompatActivity() {
         return valid
 
     }
+
     companion object {
         const val EXTRA_DAYS = "extra_days"
         const val EXTRA_WEEKS = "extra_weeks"
