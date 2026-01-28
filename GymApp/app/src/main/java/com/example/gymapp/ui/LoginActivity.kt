@@ -53,7 +53,7 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this@LoginActivity, "Usernme or password incorrect", Toast.LENGTH_SHORT).show()
                     }
                 }
-            }
+            } else Toast.makeText(this@LoginActivity, "Username or password is blank", Toast.LENGTH_SHORT).show()
         }
 
         val btnRegister: Button = findViewById(R.id.btn_register)
@@ -80,7 +80,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun launchMain() {
-        val intent = Intent(this, PlanConfirmActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
     }
 }

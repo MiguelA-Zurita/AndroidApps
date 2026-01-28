@@ -11,7 +11,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gymapp.R
@@ -19,11 +23,19 @@ import com.example.gymapp.adapter.ExerciseListAdapter
 import com.example.gymapp.model.ExerciseList
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
+import kotlinx.coroutines.launch
 
 
 class PlanConfirmActivity : AppCompatActivity() {
 
     private lateinit var tvSummary: TextView
+
+    private val AppCompatActivity.dataStore by preferencesDataStore(
+        name = "plan_attributes"
+    )
+
+    private val daysKey = stringPreferencesKey("days")
+    private val weeksKey = stringPreferencesKey("weeks")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +54,13 @@ class PlanConfirmActivity : AppCompatActivity() {
         val sessions = days * weeks
         val summary = getString(R.string.summary_text, days, weeks, sessions)
         tvSummary.text = summary
+        lifecycleScope.launch {
+            dataStore.edit { preferences ->
+                preferences[daysKey] = days.toString()
+                preferences[weeksKey] = weeks.toString()
+            }
+        }
+
 
         val btnConfirm: Button = findViewById(R.id.btnConfirm)
         btnConfirm.setOnClickListener {
@@ -66,7 +85,6 @@ class PlanConfirmActivity : AppCompatActivity() {
 
             rvExerciseList.adapter = ExerciseListAdapter(rvData)
 
-
         val tabLay = findViewById<TabLayout>(R.id.tlMenu);
         if (tabLay.tabCount == 0){
             tabLay.addTab(tabLay.newTab().setText(getString(R.string.tl_list)))
@@ -85,8 +103,11 @@ class PlanConfirmActivity : AppCompatActivity() {
                     else -> "Si ves esto, algo he hecho mal"
                 }
                 Toast.makeText(this@PlanConfirmActivity, message, Toast.LENGTH_SHORT).show()
+                if (tab.position == 1){
+                    val intent = Intent(this@PlanConfirmActivity, ExerciseList::class.java)
+                    startActivity(intent)
+                }
             }
-
             override fun onTabReselected(p0: TabLayout.Tab?) {}
             override fun onTabUnselected(p0: TabLayout.Tab?) {}
         })

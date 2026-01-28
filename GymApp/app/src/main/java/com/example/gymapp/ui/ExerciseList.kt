@@ -25,7 +25,7 @@ class ExerciseList : AppCompatActivity() {
 
         val rvExerciseList = findViewById<RecyclerView>(R.id.rv_listactivity_exerciseslist)
         rvExerciseList.layoutManager = LinearLayoutManager(this)
-        val rvController: ControllerExerciseList = ControllerExerciseList()
+        val rvController = ControllerExerciseList()
         val rvData: MutableList<ExerciseList> = rvController.getExerciseList(4)
         rvExerciseList.adapter = ExerciseListAdapter(rvData)
     }

@@ -91,7 +91,6 @@ class MainActivity : AppCompatActivity() {
                         startActivity(intent)
                         true
                     }
-
                     else -> false
                 }
             }

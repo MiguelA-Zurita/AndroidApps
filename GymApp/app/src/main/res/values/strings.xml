@@ -29,6 +29,8 @@
     <string name="tl_registered_exercises">Lista de ejercicios registrados</string>
     <string name="tl_exercise_evolution">Evolución de ejercicios</string>
     <string name="tl_plan_statistics">Estadisticas de ejercicios</string>
+    <!-- rv item strings-->
+    <string name="rv_imageDesc">Bulgara</string>
     <!-- navLayout strings-->
     <string name="nav_activate_plan">Activar plan de ejercicios</string>
     <string name="nav_register_exercise">Registrar ejercicio</string>
