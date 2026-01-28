@@ -61,7 +61,6 @@ class PlanConfirmActivity : AppCompatActivity() {
             }
         }
 
-
         val btnConfirm: Button = findViewById(R.id.btnConfirm)
         btnConfirm.setOnClickListener {
             val resultIntent = Intent().apply {
@@ -104,7 +103,7 @@ class PlanConfirmActivity : AppCompatActivity() {
                 }
                 Toast.makeText(this@PlanConfirmActivity, message, Toast.LENGTH_SHORT).show()
                 if (tab.position == 1){
-                    val intent = Intent(this@PlanConfirmActivity, ExerciseList::class.java)
+                    val intent = Intent(this@PlanConfirmActivity, com.example.gymapp.ui.ExerciseList::class.java)
                     startActivity(intent)
                 }
             }
@@ -138,7 +137,7 @@ class PlanConfirmActivity : AppCompatActivity() {
                     true
                 }
                 else -> false
-            }.also{
+            }.also {
                 drawLay.closeDrawers()
             }
         }
