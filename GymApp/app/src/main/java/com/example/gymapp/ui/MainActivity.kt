@@ -88,6 +88,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.fab_close_session ->{
                         Toast.makeText(this, R.string.fab_close_session, Toast.LENGTH_SHORT).show()
                         val intent = Intent(this, LoginActivity::class.java)
+                        intent.putExtra(FROM_CLOSE_SESSION, true)
                         startActivity(intent)
                         true
                     }
@@ -134,5 +135,6 @@ class MainActivity : AppCompatActivity() {
         const val EXTRA_DAYS = "extra_days"
         const val EXTRA_WEEKS = "extra_weeks"
         const val EXTRA_SUMMARY = "extra_summary"
+        const val FROM_CLOSE_SESSION = "from_close_session"
     }
 }

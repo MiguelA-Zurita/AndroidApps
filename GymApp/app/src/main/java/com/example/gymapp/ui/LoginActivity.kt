@@ -20,9 +20,13 @@ import kotlinx.coroutines.launch
 class LoginActivity : AppCompatActivity() {
     private lateinit var etUsername: EditText
     private lateinit var etPassword: EditText
-    private val AppCompatActivity.dataStore by preferencesDataStore(
-        name = "user_credentials"
-    )
+
+    companion object {
+        private val AppCompatActivity.dataStore by preferencesDataStore(
+            name = "user_credentials"
+        )
+    }
+
     private val userKey = stringPreferencesKey("username")
     private val pssKey = stringPreferencesKey("password")
 
@@ -36,6 +40,16 @@ class LoginActivity : AppCompatActivity() {
             insets
         }
 
+        lifecycleScope.launch {
+            dataStore.edit { preferences ->
+                if (!preferences[userKey].isNullOrBlank() and !preferences[pssKey].isNullOrBlank()) {
+                    val fromCloseAction = intent.getBooleanExtra(MainActivity.FROM_CLOSE_SESSION, false)
+                    if (!fromCloseAction){
+                        launchMain()
+                    }
+                }
+            }
+        }
 
         val btnLogin: Button = findViewById(R.id.btn_login)
         btnLogin.setOnClickListener {
@@ -47,13 +61,25 @@ class LoginActivity : AppCompatActivity() {
                 lifecycleScope.launch {
                     val preferences = dataStore.data.first()
                     if (username == preferences[userKey] && userpass == preferences[pssKey]) {
-                        Toast.makeText(this@LoginActivity, "Logged in successfully", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@LoginActivity,
+                            "Logged in successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         launchMain()
-                    } else{
-                        Toast.makeText(this@LoginActivity, "Usernme or password incorrect", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(
+                            this@LoginActivity,
+                            "Usernme or password incorrect",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
-            } else Toast.makeText(this@LoginActivity, "Username or password is blank", Toast.LENGTH_SHORT).show()
+            } else Toast.makeText(
+                this@LoginActivity,
+                "Username or password is blank",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
         val btnRegister: Button = findViewById(R.id.btn_register)
