@@ -1,7 +1,12 @@
 package com.example.gymapp.model
 
-data class ExercisePlan(
-    val id: Long,
-    var name: String,
-    //val timeUnit:
-)
+import java.sql.Date
+
+data class ExercisePlan (
+    val exerciseId: Long,
+    val planId: Long,
+    val repetitions: Int,
+    val weight: Float,
+    val seriesNo: Int,
+    val date: Date,
+    )
