@@ -1,8 +1,12 @@
 package com.example.gymapp.helper
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.example.gymapp.model.Exercise
+import com.example.gymapp.model.ExercisePlan
+import com.example.gymapp.model.Plan
 
 class SQLiteHelper(context: Context) : SQLiteOpenHelper
     (context, DATABASE_NAME, null, DATABASE_VERSION){
@@ -18,6 +22,20 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper
         db?.execSQL(SQL_DROP)
     }
 
+    fun update(o: Any){
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            when(true){
+                (o is Exercise) ->{
+                    put()
+                }
+                (o is Plan) ->{ }
+                (o is ExercisePlan) ->{ }
+                else -> {}
+            }
+        }
+    }
+
     companion object{
         private const val DATABASE_NAME = "sqlito.db"
         private const val DATABASE_VERSION = 1
@@ -27,7 +45,7 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper
         private const val SQL_INIT = """
             
             CREATE TABLE $EXERCISE_NAME(
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                $Exercise.ID_COLUMN INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL
             );
             
