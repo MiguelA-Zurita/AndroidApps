@@ -3,9 +3,13 @@
 
     <!-- Main screen strings -->
     <string name="plan_creator_title">Crea tu propio plan</string>
+    <string name="hint_plan_name">Nombre del plan</string>
     <string name="hint_days_per_week">dias de entrenamiento (1-7)</string>
     <string name="hint_weeks">semanas de entrenamiento (1-52)</string>
     <string name="btn_create_plan">Crear plan</string>
+    <string name="btn_save_plan">Guardar plan</string>
+    <string name="plan_saved">Plan guardado con éxito</string>
+    <string name="active_plan">Plan activo</string>
     <string name="operation_canceled">Operacion cancelada</string>
 
     <!-- Second screen strings -->
@@ -29,12 +33,47 @@
     <string name="tl_registered_exercises">Lista de ejercicios registrados</string>
     <string name="tl_exercise_evolution">Evolución de ejercicios</string>
     <string name="tl_plan_statistics">Estadisticas de ejercicios</string>
+
     <!-- rv item strings-->
     <string name="rv_imageDesc">Bulgara</string>
+
     <!-- navLayout strings-->
+    <string name="nav_view_plans">Ver planes</string>
+    <string name="nav_create_plan">Crear plan</string>
     <string name="nav_activate_plan">Activar plan de ejercicios</string>
     <string name="nav_register_exercise">Registrar ejercicio</string>
     <string name="nav_modify_exercise">Modificar ejercicios registrados</string>
+    <string name="btn_finish">Finalizar</string>
+    <string name="exercise_added">Ejercicio añadido</string>
+    <string name="title_add_exercise">Añadir Ejercicio</string>
+    <string name="hint_exercise_name">Nombre del ejercicio</string>
+    <string name="hint_weight">Peso (kg)</string>
+    <string name="hint_repetitions">Repeticiones</string>
+    <string name="hint_series">Series</string>
+    <string name="btn_add">Añadir</string>
+    <string name="title_plan_list">Tus Planes de Entrenamiento</string>
+    <string name="err_save_plan">Error al guardar el plan</string>
+    <string name="summary_new_plan">Plan: %1$s\n</string>
+    <string name="day_title">dia %1$d</string>
+    <string name="add_exercise_hint">Haz clic para añadir ejercicios</string>
+    <string name="summary_active_plan">Plan Activo: %1$s\n</string>
+    <string name="unknown_exercise">Desconocido</string>
+    <string name="no_exercises">Sin ejercicios</string>
+    <string name="welcome_message">Crea un plan en el menu lateral si no tienes uno.</string>
+    <string name="plan_no_name">Plan sin nombre</string>
+    <string name="err_generic">Si ves esto, algo he hecho mal</string>
+    <string name="toast_plan_activated">Plan activado</string>
+    <string name="option_activate_plan">Activar Plan</string>
+    <string name="option_view_exercises">Ver Ejercicios</string>
+    <string name="option_delete">Eliminar</string>
+    <string name="err_name_required">El nombre es obligatorio</string>
+    <string name="toast_logged_in">Logged in successfully</string>
+    <string name="err_login_incorrect">Username or password incorrect</string>
+    <string name="err_login_blank">Username or password is blank</string>
+    <string name="plan_desc_format">%1$d semanas, %2$d días/sem. %3$s</string>
+    <string name="plan_active_label">[ACTIVO]</string>
+    <string name="exercise_desc_format">%1$s (%2$dx%3$d %4$.1fkg)</string> <!--Esto es como un RegEx para formatear los ejercicios, si no habria que hacer concatenaciones de muchas cosas -->
+
     <!-- Login strings-->
     <string name="tv_login_title">Pantalla login</string>
     <string name="et_username_hint">Usuario</string>

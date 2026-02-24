@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.gymapp.R
 import com.example.gymapp.model.ExerciseList
 
-class  ExerciseListAdapter (private val items: MutableList <ExerciseList>,
+class  ExerciseListAdapter (val items: MutableList <ExerciseList>,
                            private val OnClick: (ExerciseList) -> Unit = {}
 ) : RecyclerView.Adapter<ExerciseListAdapter.ItemViewHolder>(){
 

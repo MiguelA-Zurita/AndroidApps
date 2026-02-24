@@ -5,6 +5,7 @@ data class Exercise(
     val name: String,
 ) {
     companion object {
+        const val TABLE_NAME = "exercises";
         const val ID_COLUMN = "id";
         const val NAME_COLUMN = "name";
     }

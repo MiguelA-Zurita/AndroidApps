@@ -11,7 +11,7 @@ class ControllerExerciseList {
          val ejercicio = ExerciseList(
              imagen = R.drawable.bulgara,
              titulo = "Bulgara$i",
-             descripcion = "Haces $i bulgara/s"
+             descripcion = "Bulgara $i"
          )
          listaEj += ejercicio
      }
