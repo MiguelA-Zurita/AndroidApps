@@ -1,0 +1,12 @@
+<resources>
+    <!-- Login screen (Catalan) -->
+    <string name="tv_login_title">Pantalla d\'inici de sessió</string>
+    <string name="et_username_hint">Usuari</string>
+    <string name="et_password_hint">Contrasenya</string>
+    <string name="btn_login_hint">Iniciar sessió</string>
+    <string name="btn_register_hint">Registrar-se</string>
+
+    <string name="toast_logged_in">Sessió iniciada amb èxit</string>
+    <string name="err_login_incorrect">Usuari o contrasenya incorrectes</string>
+    <string name="err_login_blank">L\'usuari o la contrasenya estan buits</string>
+</resources>

@@ -67,9 +67,9 @@
     <string name="option_view_exercises">Ver Ejercicios</string>
     <string name="option_delete">Eliminar</string>
     <string name="err_name_required">El nombre es obligatorio</string>
-    <string name="toast_logged_in">Logged in successfully</string>
-    <string name="err_login_incorrect">Username or password incorrect</string>
-    <string name="err_login_blank">Username or password is blank</string>
+    <string name="toast_logged_in">Iniciado sesión correctamente</string>
+    <string name="err_login_incorrect">Usuario o contraseña incorrecta</string>
+    <string name="err_login_blank">Usuario o contraseña en blanco</string>
     <string name="plan_desc_format">%1$d semanas, %2$d días/sem. %3$s</string>
     <string name="plan_active_label">[ACTIVO]</string>
     <string name="exercise_desc_format">%1$s (%2$dx%3$d %4$.1fkg)</string> <!--Esto es como un RegEx para formatear los ejercicios, si no habria que hacer concatenaciones de muchas cosas -->

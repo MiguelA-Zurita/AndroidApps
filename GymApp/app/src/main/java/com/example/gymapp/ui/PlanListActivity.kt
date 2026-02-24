@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gymapp.R
 import com.example.gymapp.adapter.ExerciseListAdapter
+import com.example.gymapp.helper.NotificationHelper
 import com.example.gymapp.helper.SQLiteHelper
 import com.example.gymapp.model.ExerciseList
 import com.example.gymapp.model.Plan
@@ -78,6 +79,7 @@ class PlanListActivity : AppCompatActivity() {
                 when (which) {
                     0 -> {
                         dbHelper.setActivePlan(plan.id)
+                        NotificationHelper.showPlanActivatedNotification(this, plan.name)
                         Toast.makeText(this, R.string.toast_plan_activated, Toast.LENGTH_SHORT).show()
                         
                         val intent = Intent(this, PlanConfirmActivity::class.java)
@@ -87,6 +89,7 @@ class PlanListActivity : AppCompatActivity() {
                     }
                     1 ->{
                         dbHelper.setActivePlan(plan.id)
+                        NotificationHelper.showPlanActivatedNotification(this, plan.name)
                         val intent = Intent(this, PlanConfirmActivity::class.java)
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                         startActivity(intent)

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gymapp.R
 import com.example.gymapp.adapter.ExerciseListAdapter
+import com.example.gymapp.helper.NotificationHelper
 import com.example.gymapp.helper.SQLiteHelper
 import com.example.gymapp.model.Exercise
 import com.example.gymapp.model.ExerciseList
@@ -111,6 +112,7 @@ class PlanConfirmActivity : AppCompatActivity() {
                 }
             }
             dbHelper.setActivePlan(planId)
+            NotificationHelper.showPlanActivatedNotification(this, name)
             Toast.makeText(this, R.string.plan_saved, Toast.LENGTH_SHORT).show()
             
             val intent = Intent(this, PlanConfirmActivity::class.java)
