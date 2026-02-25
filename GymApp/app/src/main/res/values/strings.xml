@@ -80,6 +80,7 @@
     <string name="et_password_hint">Contraseña</string>
     <string name="btn_login_hint">Login</string>
     <string name="btn_register_hint">Registrar</string>
+    <string name="login">Login!</string>
 
 
-    </resources>
+</resources>

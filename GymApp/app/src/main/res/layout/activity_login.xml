@@ -12,7 +12,7 @@
         android:layout_height="41dp"
         android:layout_marginStart="84dp"
         android:layout_marginTop="18dp"
-        android:text="Login!"
+        android:text="@string/login"
         android:textAlignment="center"
         android:textSize="26sp"
         app:layout_constraintStart_toStartOf="parent"

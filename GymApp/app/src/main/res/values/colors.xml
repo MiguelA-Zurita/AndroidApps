@@ -2,5 +2,10 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="cielo">#e1f4f9</color>
+    <color name="primary">#A45A52</color>
+    <color name="primary_button">#733d37</color>
+    <color name="secondary">#8D4F4A</color>
+    <color name="light_terciary">#eaf2f3</color>
+    <color name="light_senary">#e1f4f9</color>
+
 </resources>

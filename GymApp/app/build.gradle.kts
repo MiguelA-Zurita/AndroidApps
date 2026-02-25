@@ -45,5 +45,6 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.core.splashscreen)
     androidTestImplementation(libs.androidx.espresso.core)
 }

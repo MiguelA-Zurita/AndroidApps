@@ -1,5 +1,4 @@
 <resources>
-
     <string name="tv_login_title">Login Screen</string>
     <string name="et_username_hint">User</string>
     <string name="et_password_hint">Password</string>
@@ -9,4 +8,5 @@
     <string name="toast_logged_in">Logged in correctly</string>
     <string name="err_login_incorrect">User or password incorrect</string>
     <string name="err_login_blank">User or password is blank</string>
+    <string name="login">Login!</string>
 </resources>
