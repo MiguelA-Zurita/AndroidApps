@@ -1,0 +1,17 @@
+{
+  "cosmos_server": {
+    "host": "192.168.1.100",
+    "port": 8080
+  },
+  "chat_mongodb": {
+    "uri":"mongodb+srv://alumne:password@cluster.cosmos.mongodb.net/",
+    "collection": "chat_equip"
+  },
+  "local_persistence": {
+    "driver": "sqlite",
+    "path": "data/cosmos_local.db"
+  },
+  "player_settings": {
+    "nau_id": 42
+  }
+}
