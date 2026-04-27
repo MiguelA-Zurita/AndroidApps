@@ -261,7 +261,6 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper
                     )
                 )
             }
-
             else -> 0
         }
         return rows
