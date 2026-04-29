@@ -13,7 +13,7 @@ class TicTacToeBoard(context: Context) : View(context) {
         isAntiAlias = true
     }
 
-    private val board = Array(3) { IntArray(3) { 0 } } // 0: vacio, 1: X, 2: Ö
+    private val board = Array(3) { IntArray(3) } // 0: vacio, 1: X, 2: Ö
     private var isXTurn = true
 
     override fun onDraw(canvas: Canvas) {
@@ -66,7 +66,7 @@ class TicTacToeBoard(context: Context) : View(context) {
             if (row in 0..2 && col in 0..2 && board[row][col] == 0) {
                 board[row][col] = if (isXTurn) 1 else 2
                 isXTurn = !isXTurn
-                invalidate()
+                invalidate() //Obliga a que se repinte la tabla
                 return true
             }
         }

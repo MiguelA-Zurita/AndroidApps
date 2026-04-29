@@ -8,6 +8,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.tictactoe.R
 
 import android.widget.Button
+import android.widget.FrameLayout
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,7 +21,9 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        val board = findViewById<TicTacToeBoard>(R.id.ticTacToeBoard)
+        val board = TicTacToeBoard(this)
+        val frameLayout = findViewById<FrameLayout>(R.id.TicTacToeBoard)
+        frameLayout.addView(board)
         val btnReset = findViewById<Button>(R.id.btnReset)
 
         btnReset.setOnClickListener {
