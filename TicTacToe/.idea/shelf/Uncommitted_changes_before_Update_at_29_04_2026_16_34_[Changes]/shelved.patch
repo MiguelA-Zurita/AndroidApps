@@ -1,0 +1,577 @@
+Index: app/src/main/java/com/example/tictactoe/ui/TicTacToeBoard.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.tictactoe.ui\r\n\r\nimport android.content.Context\r\nimport android.graphics.*\r\nimport android.view.View\r\n\r\nclass TicTacToeBoard(context: Context) : View(context) {\r\n    fun OnDraw(canvas: Canvas){\r\n\r\n        val paint = Paint()\r\n        paint.color = Color.BLACK\r\n        paint.strokeWidth = 12f\r\n        paint.style = Paint.Style.STROKE\r\n        paint.isAntiAlias = true\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/tictactoe/ui/TicTacToeBoard.kt b/app/src/main/java/com/example/tictactoe/ui/TicTacToeBoard.kt
+--- a/app/src/main/java/com/example/tictactoe/ui/TicTacToeBoard.kt	(revision 65b9394ffb381445dea1ad0bbe255492b312b79b)
++++ b/app/src/main/java/com/example/tictactoe/ui/TicTacToeBoard.kt	(date 1777046930110)
+@@ -12,6 +12,8 @@
+         paint.strokeWidth = 12f
+         paint.style = Paint.Style.STROKE
+         paint.isAntiAlias = true
++
++        canvas.drawCircle(200f, 200f, 100f, paint)
+     }
+ 
+ }
+\ No newline at end of file
+Index: ../Cosmos/app/src/main/res/values/cosmosconfig.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\r\n  \"cosmos_server\": {\r\n    \"host\": \"192.168.1.100\",\r\n    \"port\": 8080\r\n  },\r\n  \"chat_mongodb\": {\r\n    \"uri\":\"mongodb+srv://alumne:password@cluster.cosmos.mongodb.net/\",\r\n    \"collection\": \"chat_equip\"\r\n  },\r\n  \"local_persistence\": {\r\n    \"driver\": \"sqlite\",\r\n    \"path\": \"data/cosmos_local.db\"\r\n  },\r\n  \"player_settings\": {\r\n    \"nau_id\": 42\r\n  }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../Cosmos/app/src/main/res/values/cosmosconfig.json b/../Cosmos/app/src/main/res/values/cosmosconfig.json
+--- a/../Cosmos/app/src/main/res/values/cosmosconfig.json	(revision 65b9394ffb381445dea1ad0bbe255492b312b79b)
++++ b/../Cosmos/app/src/main/res/values/cosmosconfig.json	(date 1776874543976)
+@@ -4,8 +4,9 @@
+     "port": 8080
+   },
+   "chat_mongodb": {
+-    "uri":"mongodb+srv://alumne:password@cluster.cosmos.mongodb.net/",
+-    "collection": "chat_equip"
++    "uri":"mongodb+srv://cide2026:sZl2u3q5Jc0dTFQp@cosmoschat2026.3skcuff.mongodb.net/?appName=CosmosChat2026",
++    "database": "cosmoschat",
++    "collection": "messages"
+   },
+   "local_persistence": {
+     "driver": "sqlite",
+Index: ../Cosmos/app/src/main/java/com/example/cosmos/helper/SQLiteHelper.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../Cosmos/app/src/main/java/com/example/cosmos/helper/SQLiteHelper.kt b/../Cosmos/app/src/main/java/com/example/cosmos/helper/SQLiteHelper.kt
+new file mode 100644
+--- /dev/null	(date 1776876020208)
++++ b/../Cosmos/app/src/main/java/com/example/cosmos/helper/SQLiteHelper.kt	(date 1776876020208)
+@@ -0,0 +1,385 @@
++package com.example.cosmos.helper
++
++import android.content.ContentValues
++import android.content.Context
++import android.database.sqlite.SQLiteDatabase
++import android.database.sqlite.SQLiteOpenHelper
++import java.sql.Date
++
++class SQLiteHelper(context: Context) : SQLiteOpenHelper
++    (context, DATABASE_NAME, null, DATABASE_VERSION) {
++    override fun onCreate(db: SQLiteDatabase?) {
++        initTables(db)
++    }
++
++    override fun onUpgrade(
++        db: SQLiteDatabase?,
++        oldVersion: Int,
++        newVersion: Int
++    ) {
++        dropTables(db)
++        initTables(db)
++    }
++
++    fun initTables(db: SQLiteDatabase?) {
++        db?.execSQL(SQL_INIT_EXERCISE)
++        db?.execSQL(SQL_INIT_PLAN)
++        db?.execSQL(SQL_INIT_EXERCISEPLAN)
++
++    }
++
++    fun dropTables(db: SQLiteDatabase?) {
++        db?.execSQL(SQL_DROP_EXERCISE)
++        db?.execSQL(SQL_DROP_PLAN)
++        db?.execSQL(SQL_DROP_EXERCISEPLAN)
++    }
++
++    fun insert(o: Any): Long {
++        val db = writableDatabase
++        val id: Long
++        ContentValues().apply {
++            when (true) {
++                (o is Exercise) -> {
++                    put(Exercise.NAME_COLUMN, o.name)
++                    id = db.insert(Exercise.TABLE_NAME, null, this)
++                }
++
++                (o is Plan) -> {
++                    put(Plan.NAME_COLUMN, o.name)
++                    put(Plan.WEEKS_COLUMN, o.weeks)
++                    put(Plan.DAYS_PER_WEEK_COLUMN, o.daysPerWeek)
++                    put(Plan.ENABLED_COLUMN, if (o.enabled) 1 else 0)
++                    id = db.insert(Plan.TABLE_NAME, null, this)
++                }
++
++                (o is ExercisePlan) -> {
++                    put(ExercisePlan.EXERCISE_ID_COLUMN, o.exerciseId)
++                    put(ExercisePlan.PLAN_ID_COLUMN, o.planId)
++                    put(ExercisePlan.REPETITIONS_COLUMN, o.repetitions)
++                    put(ExercisePlan.WEIGHT_COLUMN, o.weight)
++                    put(ExercisePlan.SERIES_COLUMN, o.seriesNo)
++                    put(ExercisePlan.DATE_COLUMN, o.date.toString())
++                    id = db.insert(ExercisePlan.TABLE_NAME, null, this)
++                }
++
++                else -> {
++                    id = 0L
++                }
++            }
++        }
++        return id
++    }
++
++    fun getAll(clazz: Class<*>): List<Any> {
++        val db = readableDatabase
++        val list: MutableList<Any> = mutableListOf()
++        val cursor = when (clazz) {
++            Exercise::class.java -> db.rawQuery("SELECT * FROM ${Exercise.TABLE_NAME}", null)
++            Plan::class.java -> db.rawQuery("SELECT * FROM ${Plan.TABLE_NAME}", null)
++            ExercisePlan::class.java -> db.rawQuery(
++                "SELECT * FROM ${ExercisePlan.TABLE_NAME}",
++                null
++            )
++
++            else -> null
++        }
++        cursor.use { cursor ->
++            if (cursor != null) {
++                while (cursor.moveToNext()) {
++                    when (clazz) {
++                        Exercise::class.java -> list.add(
++                            Exercise(
++                                cursor.getLong(cursor.getColumnIndexOrThrow(Exercise.ID_COLUMN)),
++                                cursor.getString(cursor.getColumnIndexOrThrow(Exercise.NAME_COLUMN))
++                            )
++                        )
++
++                        Plan::class.java -> list.add(
++                            Plan(
++                                cursor.getLong(cursor.getColumnIndexOrThrow(Plan.ID_COLUMN)),
++                                cursor.getString(cursor.getColumnIndexOrThrow(Plan.NAME_COLUMN)),
++                                cursor.getInt(cursor.getColumnIndexOrThrow(Plan.WEEKS_COLUMN)),
++                                cursor.getInt(cursor.getColumnIndexOrThrow(Plan.DAYS_PER_WEEK_COLUMN)),
++                                cursor.getInt(cursor.getColumnIndexOrThrow(Plan.ENABLED_COLUMN)) == 1
++                            )
++                        )
++
++                        ExercisePlan::class.java -> list.add(
++                            ExercisePlan(
++                                cursor.getLong(cursor.getColumnIndexOrThrow(ExercisePlan.EXERCISE_ID_COLUMN)),
++                                cursor.getLong(cursor.getColumnIndexOrThrow(ExercisePlan.PLAN_ID_COLUMN)),
++                                cursor.getInt(cursor.getColumnIndexOrThrow(ExercisePlan.REPETITIONS_COLUMN)),
++                                cursor.getFloat(cursor.getColumnIndexOrThrow(ExercisePlan.WEIGHT_COLUMN)),
++                                cursor.getInt(cursor.getColumnIndexOrThrow(ExercisePlan.SERIES_COLUMN)),
++                                Date.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ExercisePlan.DATE_COLUMN)))
++                            )
++                        )
++                    }
++                }
++            }
++        }
++        return list
++    }
++
++    fun getById(clazz: Class<*>, id: Long): Any? {
++        val db = readableDatabase
++        val cursor = when (clazz) {
++            Exercise::class.java -> db.query(
++                Exercise.TABLE_NAME,
++                arrayOf(Exercise.ID_COLUMN, Exercise.NAME_COLUMN),
++                "${Exercise.ID_COLUMN}=?",
++                arrayOf(id.toString()),
++                null,
++                null,
++                "${Exercise.ID_COLUMN} DESC"
++            )
++
++            Plan::class.java -> db.query(
++                Plan.TABLE_NAME,
++                arrayOf(
++                    Plan.ID_COLUMN,
++                    Plan.NAME_COLUMN,
++                    Plan.WEEKS_COLUMN,
++                    Plan.DAYS_PER_WEEK_COLUMN,
++                    Plan.ENABLED_COLUMN
++                ),
++                "${Plan.ID_COLUMN}=?",
++                arrayOf(id.toString()),
++                null,
++                null,
++                "${Plan.ID_COLUMN} DESC"
++            )
++
++            ExercisePlan::class.java -> db.query(
++                ExercisePlan.TABLE_NAME,
++                arrayOf(
++                    ExercisePlan.EXERCISE_ID_COLUMN,
++                    ExercisePlan.PLAN_ID_COLUMN,
++                    ExercisePlan.REPETITIONS_COLUMN,
++                    ExercisePlan.WEIGHT_COLUMN,
++                    ExercisePlan.SERIES_COLUMN,
++                    ExercisePlan.DATE_COLUMN
++                ),
++                "${ExercisePlan.EXERCISE_ID_COLUMN}=?",
++                arrayOf(id.toString()),
++                null,
++                null,
++                "${ExercisePlan.EXERCISE_ID_COLUMN} DESC"
++            )
++            else -> null
++        }
++        if (cursor != null && cursor.moveToFirst()) {
++            return when (clazz) {
++                Exercise::class.java -> Exercise(
++                    cursor.getLong(
++                        cursor.getColumnIndexOrThrow(
++                            Exercise.ID_COLUMN
++                        )
++                    ), cursor.getString(cursor.getColumnIndexOrThrow(Exercise.NAME_COLUMN))
++                )
++
++                Plan::class.java -> Plan(
++                    cursor.getLong(cursor.getColumnIndexOrThrow(Plan.ID_COLUMN)),
++                    cursor.getString(cursor.getColumnIndexOrThrow(Plan.NAME_COLUMN)),
++                    cursor.getInt(cursor.getColumnIndexOrThrow(Plan.WEEKS_COLUMN)),
++                    cursor.getInt(cursor.getColumnIndexOrThrow(Plan.DAYS_PER_WEEK_COLUMN)),
++                    cursor.getInt(cursor.getColumnIndexOrThrow(Plan.ENABLED_COLUMN)) == 1
++                )
++
++                ExercisePlan::class.java -> ExercisePlan(
++                    cursor.getLong(cursor.getColumnIndexOrThrow(ExercisePlan.EXERCISE_ID_COLUMN)),
++                    cursor.getLong(cursor.getColumnIndexOrThrow(ExercisePlan.PLAN_ID_COLUMN)),
++                    cursor.getInt(cursor.getColumnIndexOrThrow(ExercisePlan.REPETITIONS_COLUMN)),
++                    cursor.getFloat(cursor.getColumnIndexOrThrow(ExercisePlan.WEIGHT_COLUMN)),
++                    cursor.getInt(cursor.getColumnIndexOrThrow(ExercisePlan.SERIES_COLUMN)),
++                    Date.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ExercisePlan.DATE_COLUMN)))
++                )
++                else -> null
++            }
++        }
++        else return null
++    }
++
++    fun update(o: Any): Int {
++        val db = writableDatabase
++        val rows = when (o) {
++            is Exercise -> {
++                val values = ContentValues().apply {
++                    put(Exercise.NAME_COLUMN, o.name)
++                }
++                db.update(
++                    Exercise.TABLE_NAME,
++                    values,
++                    "${Exercise.ID_COLUMN}=?",
++                    arrayOf(o.id.toString())
++                )
++            }
++
++            is Plan -> {
++                val values = ContentValues().apply {
++                    put(Plan.NAME_COLUMN, o.name)
++                    put(Plan.WEEKS_COLUMN, o.weeks)
++                    put(Plan.DAYS_PER_WEEK_COLUMN, o.daysPerWeek)
++                    put(Plan.ENABLED_COLUMN, if (o.enabled) 1 else 0)
++                }
++                db.update(
++                    Plan.TABLE_NAME,
++                    values,
++                    "${Plan.ID_COLUMN}=?",
++                    arrayOf(o.id.toString())
++                )
++            }
++
++            is ExercisePlan -> {
++                val values = ContentValues().apply {
++                    put(ExercisePlan.REPETITIONS_COLUMN, o.repetitions)
++                    put(ExercisePlan.WEIGHT_COLUMN, o.weight)
++                }
++                db.update(
++                    ExercisePlan.TABLE_NAME,
++                    values,
++                    "${ExercisePlan.EXERCISE_ID_COLUMN}=? AND ${ExercisePlan.PLAN_ID_COLUMN}=? AND ${ExercisePlan.SERIES_COLUMN}=? AND ${ExercisePlan.DATE_COLUMN}=?",
++                    arrayOf(
++                        o.exerciseId.toString(),
++                        o.planId.toString(),
++                        o.seriesNo.toString(),
++                        o.date.toString()
++                    )
++                )
++            }
++
++            else -> 0
++        }
++        return rows
++    }
++
++    fun delete(clazz: Class<*>, id: Long): Int {
++        val db = writableDatabase
++        return when (clazz) {
++            Exercise::class.java -> db.delete(Exercise.TABLE_NAME, "${Exercise.ID_COLUMN}=?", arrayOf(id.toString()))
++            Plan::class.java -> {
++                // Also delete related exercise plans
++                db.delete(ExercisePlan.TABLE_NAME, "${ExercisePlan.PLAN_ID_COLUMN}=?", arrayOf(id.toString()))
++                db.delete(Plan.TABLE_NAME, "${Plan.ID_COLUMN}=?", arrayOf(id.toString()))
++            }
++            ExercisePlan::class.java -> db.delete(ExercisePlan.TABLE_NAME, "${ExercisePlan.EXERCISE_ID_COLUMN}=?", arrayOf(id.toString()))
++            else -> 0
++        }
++    }
++
++    fun getActivePlan(): Plan? {
++        val db = readableDatabase
++        val cursor = db.query(
++            Plan.TABLE_NAME,
++            null,
++            "${Plan.ENABLED_COLUMN}=?",
++            arrayOf("1"),
++            null,
++            null,
++            null
++        )
++        cursor.use {
++            if (it.moveToFirst()) {
++                return Plan(
++                    it.getLong(it.getColumnIndexOrThrow(Plan.ID_COLUMN)),
++                    it.getString(it.getColumnIndexOrThrow(Plan.NAME_COLUMN)),
++                    it.getInt(it.getColumnIndexOrThrow(Plan.WEEKS_COLUMN)),
++                    it.getInt(it.getColumnIndexOrThrow(Plan.DAYS_PER_WEEK_COLUMN)),
++                    it.getInt(it.getColumnIndexOrThrow(Plan.ENABLED_COLUMN)) == 1
++                )
++            }
++        }
++        return null
++    }
++
++    fun getExercisesForPlan(planId: Long): List<ExercisePlan> {
++        val db = readableDatabase
++        val list = mutableListOf<ExercisePlan>()
++        val cursor = db.query(
++            ExercisePlan.TABLE_NAME,
++            null,
++            "${ExercisePlan.PLAN_ID_COLUMN}=?",
++            arrayOf(planId.toString()),
++            null,
++            null,
++            "${ExercisePlan.DATE_COLUMN} ASC"
++        )
++        cursor.use {
++            while (it.moveToNext()) {
++                list.add(
++                    ExercisePlan(
++                        it.getLong(it.getColumnIndexOrThrow(ExercisePlan.EXERCISE_ID_COLUMN)),
++                        it.getLong(it.getColumnIndexOrThrow(ExercisePlan.PLAN_ID_COLUMN)),
++                        it.getInt(it.getColumnIndexOrThrow(ExercisePlan.REPETITIONS_COLUMN)),
++                        it.getFloat(it.getColumnIndexOrThrow(ExercisePlan.WEIGHT_COLUMN)),
++                        it.getInt(it.getColumnIndexOrThrow(ExercisePlan.SERIES_COLUMN)),
++                        Date.valueOf(it.getString(it.getColumnIndexOrThrow(ExercisePlan.DATE_COLUMN)))
++                    )
++                )
++            }
++        }
++        return list
++    }
++
++    fun setActivePlan(planId: Long) {
++        val db = writableDatabase
++        try {
++            val valuesAll = ContentValues().apply {
++                put(Plan.ENABLED_COLUMN, 0)
++            }
++            db.update(Plan.TABLE_NAME, valuesAll, null, null)
++        } catch (e: Exception) {
++            e.printStackTrace()
++        }
++
++        val plan = getById(Plan::class.java, planId) as? Plan
++        if (plan != null) {
++            update(plan.copy(enabled = true))
++        }
++    }
++
++    companion object {
++        private const val DATABASE_NAME = "sqlito.db"
++        private const val DATABASE_VERSION = 1
++        private const val EXERCISE_NAME = "exercises"
++        private const val PLAN_NAME = "plans"
++        private const val EXERCISEPLAN_NAME = "exercise_plan"
++        private const val SQL_INIT_EXERCISE = """
++            CREATE TABLE IF NOT EXISTS ${Exercise.TABLE_NAME}(
++                ${Exercise.ID_COLUMN} INTEGER PRIMARY KEY AUTOINCREMENT,
++                ${Exercise.NAME_COLUMN} TEXT NOT NULL
++            );
++        """
++        private const val SQL_INIT_PLAN = """
++            CREATE TABLE IF NOT EXISTS ${Plan.TABLE_NAME}(
++                ${Plan.ID_COLUMN} INTEGER PRIMARY KEY AUTOINCREMENT,
++                ${Plan.NAME_COLUMN} TEXT NOT NULL,
++                ${Plan.WEEKS_COLUMN} INTEGER NOT NULL,
++                ${Plan.DAYS_PER_WEEK_COLUMN} INTEGER NOT NULL,
++                ${Plan.ENABLED_COLUMN} INTEGER NOT NULL
++            );            
++        """
++        private const val SQL_INIT_EXERCISEPLAN = """
++            CREATE TABLE  IF NOT EXISTS ${ExercisePlan.TABLE_NAME}(
++                ${ExercisePlan.EXERCISE_ID_COLUMN} INTEGER NOT NULL,
++                ${ExercisePlan.PLAN_ID_COLUMN} INTEGER NOT NULL,
++                ${ExercisePlan.REPETITIONS_COLUMN} INTEGER NOT NULL,
++                ${ExercisePlan.WEIGHT_COLUMN} REAL NOT NULL,
++                ${ExercisePlan.SERIES_COLUMN} INTEGER NOT NULL,
++                ${ExercisePlan.DATE_COLUMN} NUMERIC  NOT NULL,
++                PRIMARY KEY(${ExercisePlan.EXERCISE_ID_COLUMN}, ${ExercisePlan.PLAN_ID_COLUMN}, ${ExercisePlan.SERIES_COLUMN}, ${ExercisePlan.DATE_COLUMN}),
++                FOREIGN KEY (${ExercisePlan.EXERCISE_ID_COLUMN}) REFERENCES $EXERCISE_NAME(id),
++                FOREIGN KEY (${ExercisePlan.PLAN_ID_COLUMN}) REFERENCES $PLAN_NAME(${Plan.ID_COLUMN})
++            );            
++        """
++        private const val SQL_DROP_EXERCISE = """
++            DROP TABLE IF EXISTS $EXERCISE_NAME;
++        """
++        private const val SQL_DROP_PLAN = """
++            DROP TABLE IF EXISTS $PLAN_NAME;
++        """
++        private const val SQL_DROP_EXERCISEPLAN = """
++            DROP TABLE IF EXISTS $EXERCISEPLAN_NAME;
++        """
++    }
++}
+\ No newline at end of file
+Index: ../Cosmos/app/src/main/java/com/example/cosmos/MainActivity.kt
+===================================================================
+diff --git a/../Cosmos/app/src/main/java/com/example/cosmos/MainActivity.kt b/../Cosmos/app/src/main/java/com/example/cosmos/ui/MainActivity.kt
+rename from ../Cosmos/app/src/main/java/com/example/cosmos/MainActivity.kt
+rename to ../Cosmos/app/src/main/java/com/example/cosmos/ui/MainActivity.kt
+--- a/../Cosmos/app/src/main/java/com/example/cosmos/MainActivity.kt	(revision 65b9394ffb381445dea1ad0bbe255492b312b79b)
++++ b/../Cosmos/app/src/main/java/com/example/cosmos/ui/MainActivity.kt	(date 1776875453916)
+@@ -1,4 +1,4 @@
+-package com.example.cosmos
++package com.example.cosmos.ui
+ 
+ import android.os.Bundle
+ import androidx.activity.ComponentActivity
+@@ -17,10 +17,10 @@
+ import androidx.compose.runtime.setValue
+ import androidx.compose.ui.Modifier
+ import androidx.compose.ui.res.painterResource
+-import androidx.compose.ui.graphics.vector.ImageVector
+ import androidx.compose.ui.tooling.preview.Preview
+ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+-import com.example.cosmos.ui.theme.CosmosTheme
++import com.example.cosmos.R
++import com.example.cosmos.theme.CosmosTheme
+ 
+ class MainActivity : ComponentActivity() {
+     override fun onCreate(savedInstanceState: Bundle?) {
+Index: ../Cosmos/app/src/main/java/com/example/cosmos/ui/theme/Color.kt
+===================================================================
+diff --git a/../Cosmos/app/src/main/java/com/example/cosmos/ui/theme/Color.kt b/../Cosmos/app/src/main/java/com/example/cosmos/theme/Color.kt
+rename from ../Cosmos/app/src/main/java/com/example/cosmos/ui/theme/Color.kt
+rename to ../Cosmos/app/src/main/java/com/example/cosmos/theme/Color.kt
+--- a/../Cosmos/app/src/main/java/com/example/cosmos/ui/theme/Color.kt	(revision 65b9394ffb381445dea1ad0bbe255492b312b79b)
++++ b/../Cosmos/app/src/main/java/com/example/cosmos/theme/Color.kt	(date 1776875453933)
+@@ -1,4 +1,4 @@
+-package com.example.cosmos.ui.theme
++package com.example.cosmos.theme
+ 
+ import androidx.compose.ui.graphics.Color
+ 
+Index: ../GymApp/app/src/main/java/com/example/gymapp/helper/SQLiteHelper.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.gymapp.helper\r\n\r\nimport android.annotation.SuppressLint\r\nimport android.content.ContentValues\r\nimport android.content.Context\r\nimport android.database.Cursor\r\nimport android.database.sqlite.SQLiteDatabase\r\nimport android.database.sqlite.SQLiteOpenHelper\r\nimport com.example.gymapp.model.Exercise\r\nimport com.example.gymapp.model.ExercisePlan\r\nimport com.example.gymapp.model.Plan\r\nimport java.sql.Date\r\nimport java.text.DateFormat\r\nimport java.time.LocalDate\r\n\r\nclass SQLiteHelper(context: Context) : SQLiteOpenHelper\r\n    (context, DATABASE_NAME, null, DATABASE_VERSION) {\r\n    override fun onCreate(db: SQLiteDatabase?) {\r\n        initTables(db)\r\n    }\r\n\r\n    override fun onUpgrade(\r\n        db: SQLiteDatabase?,\r\n        oldVersion: Int,\r\n        newVersion: Int\r\n    ) {\r\n        dropTables(db)\r\n        initTables(db)\r\n    }\r\n\r\n    fun initTables(db: SQLiteDatabase?) {\r\n        db?.execSQL(SQL_INIT_EXERCISE)\r\n        db?.execSQL(SQL_INIT_PLAN)\r\n        db?.execSQL(SQL_INIT_EXERCISEPLAN)\r\n        \r\n        val commonExercises = listOf(\"Press de banca\", \"Sentadillas\", \"Peso muerto\", \"Press militar\", \"Dominadas\") //Ejercicios que por ahora no se utilizan, pendiente de implementacion\r\n        commonExercises.forEach { name ->\r\n            val values = ContentValues().apply {\r\n                put(Exercise.NAME_COLUMN, name)\r\n            }\r\n            db?.insert(Exercise.TABLE_NAME, null, values)\r\n        }\r\n    }\r\n\r\n    fun dropTables(db: SQLiteDatabase?) {\r\n        db?.execSQL(SQL_DROP_EXERCISE)\r\n        db?.execSQL(SQL_DROP_PLAN)\r\n        db?.execSQL(SQL_DROP_EXERCISEPLAN)\r\n    }\r\n\r\n    fun insert(o: Any): Long {\r\n        val db = writableDatabase\r\n        val id: Long\r\n        ContentValues().apply {\r\n            when (true) {\r\n                (o is Exercise) -> {\r\n                    put(Exercise.NAME_COLUMN, o.name)\r\n                    id = db.insert(Exercise.TABLE_NAME, null, this)\r\n                }\r\n\r\n                (o is Plan) -> {\r\n                    put(Plan.NAME_COLUMN, o.name)\r\n                    put(Plan.WEEKS_COLUMN, o.weeks)\r\n                    put(Plan.DAYS_PER_WEEK_COLUMN, o.daysPerWeek)\r\n                    put(Plan.ENABLED_COLUMN, if (o.enabled) 1 else 0)\r\n                    id = db.insert(Plan.TABLE_NAME, null, this)\r\n                }\r\n\r\n                (o is ExercisePlan) -> {\r\n                    put(ExercisePlan.EXERCISE_ID_COLUMN, o.exerciseId)\r\n                    put(ExercisePlan.PLAN_ID_COLUMN, o.planId)\r\n                    put(ExercisePlan.REPETITIONS_COLUMN, o.repetitions)\r\n                    put(ExercisePlan.WEIGHT_COLUMN, o.weight)\r\n                    put(ExercisePlan.SERIES_COLUMN, o.seriesNo)\r\n                    put(ExercisePlan.DATE_COLUMN, o.date.toString())\r\n                    id = db.insert(ExercisePlan.TABLE_NAME, null, this)\r\n                }\r\n\r\n                else -> {\r\n                    id = 0L\r\n                }\r\n            }\r\n        }\r\n        return id\r\n    }\r\n\r\n    fun getAll(clazz: Class<*>): List<Any> {\r\n        val db = readableDatabase\r\n        val list: MutableList<Any> = mutableListOf()\r\n        val cursor = when (clazz) {\r\n            Exercise::class.java -> db.rawQuery(\"SELECT * FROM ${Exercise.TABLE_NAME}\", null)\r\n            Plan::class.java -> db.rawQuery(\"SELECT * FROM ${Plan.TABLE_NAME}\", null)\r\n            ExercisePlan::class.java -> db.rawQuery(\r\n                \"SELECT * FROM ${ExercisePlan.TABLE_NAME}\",\r\n                null\r\n            )\r\n\r\n            else -> null\r\n        }\r\n        cursor.use { cursor ->\r\n            if (cursor != null) {\r\n                while (cursor.moveToNext()) {\r\n                    when (clazz) {\r\n                        Exercise::class.java -> list.add(\r\n                            Exercise(\r\n                                cursor.getLong(cursor.getColumnIndexOrThrow(Exercise.ID_COLUMN)),\r\n                                cursor.getString(cursor.getColumnIndexOrThrow(Exercise.NAME_COLUMN))\r\n                            )\r\n                        )\r\n\r\n                        Plan::class.java -> list.add(\r\n                            Plan(\r\n                                cursor.getLong(cursor.getColumnIndexOrThrow(Plan.ID_COLUMN)),\r\n                                cursor.getString(cursor.getColumnIndexOrThrow(Plan.NAME_COLUMN)),\r\n                                cursor.getInt(cursor.getColumnIndexOrThrow(Plan.WEEKS_COLUMN)),\r\n                                cursor.getInt(cursor.getColumnIndexOrThrow(Plan.DAYS_PER_WEEK_COLUMN)),\r\n                                cursor.getInt(cursor.getColumnIndexOrThrow(Plan.ENABLED_COLUMN)) == 1\r\n                            )\r\n                        )\r\n\r\n                        ExercisePlan::class.java -> list.add(\r\n                            ExercisePlan(\r\n                                cursor.getLong(cursor.getColumnIndexOrThrow(ExercisePlan.EXERCISE_ID_COLUMN)),\r\n                                cursor.getLong(cursor.getColumnIndexOrThrow(ExercisePlan.PLAN_ID_COLUMN)),\r\n                                cursor.getInt(cursor.getColumnIndexOrThrow(ExercisePlan.REPETITIONS_COLUMN)),\r\n                                cursor.getFloat(cursor.getColumnIndexOrThrow(ExercisePlan.WEIGHT_COLUMN)),\r\n                                cursor.getInt(cursor.getColumnIndexOrThrow(ExercisePlan.SERIES_COLUMN)),\r\n                                Date.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ExercisePlan.DATE_COLUMN)))\r\n                            )\r\n                        )\r\n                    }\r\n                }\r\n            }\r\n        }\r\n        return list\r\n    }\r\n\r\n    fun getById(clazz: Class<*>, id: Long): Any? {\r\n        val db = readableDatabase\r\n        val cursor = when (clazz) {\r\n            Exercise::class.java -> db.query(\r\n                Exercise.TABLE_NAME,\r\n                arrayOf(Exercise.ID_COLUMN, Exercise.NAME_COLUMN),\r\n                \"${Exercise.ID_COLUMN}=?\",\r\n                arrayOf(id.toString()),\r\n                null,\r\n                null,\r\n                \"${Exercise.ID_COLUMN} DESC\"\r\n            )\r\n\r\n            Plan::class.java -> db.query(\r\n                Plan.TABLE_NAME,\r\n                arrayOf(\r\n                    Plan.ID_COLUMN,\r\n                    Plan.NAME_COLUMN,\r\n                    Plan.WEEKS_COLUMN,\r\n                    Plan.DAYS_PER_WEEK_COLUMN,\r\n                    Plan.ENABLED_COLUMN\r\n                ),\r\n                \"${Plan.ID_COLUMN}=?\",\r\n                arrayOf(id.toString()),\r\n                null,\r\n                null,\r\n                \"${Plan.ID_COLUMN} DESC\"\r\n            )\r\n\r\n            ExercisePlan::class.java -> db.query(\r\n                ExercisePlan.TABLE_NAME,\r\n                arrayOf(\r\n                    ExercisePlan.EXERCISE_ID_COLUMN,\r\n                    ExercisePlan.PLAN_ID_COLUMN,\r\n                    ExercisePlan.REPETITIONS_COLUMN,\r\n                    ExercisePlan.WEIGHT_COLUMN,\r\n                    ExercisePlan.SERIES_COLUMN,\r\n                    ExercisePlan.DATE_COLUMN\r\n                ),\r\n                \"${ExercisePlan.EXERCISE_ID_COLUMN}=?\",\r\n                arrayOf(id.toString()),\r\n                null,\r\n                null,\r\n                \"${ExercisePlan.EXERCISE_ID_COLUMN} DESC\"\r\n            )\r\n            else -> null\r\n        }\r\n        if (cursor != null && cursor.moveToFirst()) {\r\n            return when (clazz) {\r\n                Exercise::class.java -> Exercise(\r\n                    cursor.getLong(\r\n                        cursor.getColumnIndexOrThrow(\r\n                            Exercise.ID_COLUMN\r\n                        )\r\n                    ), cursor.getString(cursor.getColumnIndexOrThrow(Exercise.NAME_COLUMN))\r\n                )\r\n\r\n                Plan::class.java -> Plan(\r\n                    cursor.getLong(cursor.getColumnIndexOrThrow(Plan.ID_COLUMN)),\r\n                    cursor.getString(cursor.getColumnIndexOrThrow(Plan.NAME_COLUMN)),\r\n                    cursor.getInt(cursor.getColumnIndexOrThrow(Plan.WEEKS_COLUMN)),\r\n                    cursor.getInt(cursor.getColumnIndexOrThrow(Plan.DAYS_PER_WEEK_COLUMN)),\r\n                    cursor.getInt(cursor.getColumnIndexOrThrow(Plan.ENABLED_COLUMN)) == 1\r\n                )\r\n\r\n                ExercisePlan::class.java -> ExercisePlan(\r\n                    cursor.getLong(cursor.getColumnIndexOrThrow(ExercisePlan.EXERCISE_ID_COLUMN)),\r\n                    cursor.getLong(cursor.getColumnIndexOrThrow(ExercisePlan.PLAN_ID_COLUMN)),\r\n                    cursor.getInt(cursor.getColumnIndexOrThrow(ExercisePlan.REPETITIONS_COLUMN)),\r\n                    cursor.getFloat(cursor.getColumnIndexOrThrow(ExercisePlan.WEIGHT_COLUMN)),\r\n                    cursor.getInt(cursor.getColumnIndexOrThrow(ExercisePlan.SERIES_COLUMN)),\r\n                    Date.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ExercisePlan.DATE_COLUMN)))\r\n                )\r\n                else -> null\r\n            }\r\n        }\r\n        else return null\r\n    }\r\n\r\n    fun update(o: Any): Int {\r\n        val db = writableDatabase\r\n        val rows = when (o) {\r\n            is Exercise -> {\r\n                val values = ContentValues().apply {\r\n                    put(Exercise.NAME_COLUMN, o.name)\r\n                }\r\n                db.update(\r\n                    Exercise.TABLE_NAME,\r\n                    values,\r\n                    \"${Exercise.ID_COLUMN}=?\",\r\n                    arrayOf(o.id.toString())\r\n                )\r\n            }\r\n\r\n            is Plan -> {\r\n                val values = ContentValues().apply {\r\n                    put(Plan.NAME_COLUMN, o.name)\r\n                    put(Plan.WEEKS_COLUMN, o.weeks)\r\n                    put(Plan.DAYS_PER_WEEK_COLUMN, o.daysPerWeek)\r\n                    put(Plan.ENABLED_COLUMN, if (o.enabled) 1 else 0)\r\n                }\r\n                db.update(\r\n                    Plan.TABLE_NAME,\r\n                    values,\r\n                    \"${Plan.ID_COLUMN}=?\",\r\n                    arrayOf(o.id.toString())\r\n                )\r\n            }\r\n\r\n            is ExercisePlan -> {\r\n                val values = ContentValues().apply {\r\n                    put(ExercisePlan.REPETITIONS_COLUMN, o.repetitions)\r\n                    put(ExercisePlan.WEIGHT_COLUMN, o.weight)\r\n                }\r\n                db.update(\r\n                    ExercisePlan.TABLE_NAME,\r\n                    values,\r\n                    \"${ExercisePlan.EXERCISE_ID_COLUMN}=? AND ${ExercisePlan.PLAN_ID_COLUMN}=? AND ${ExercisePlan.SERIES_COLUMN}=? AND ${ExercisePlan.DATE_COLUMN}=?\",\r\n                    arrayOf(\r\n                        o.exerciseId.toString(),\r\n                        o.planId.toString(),\r\n                        o.seriesNo.toString(),\r\n                        o.date.toString()\r\n                    )\r\n                )\r\n            }\r\n\r\n            else -> 0\r\n        }\r\n        return rows\r\n    }\r\n\r\n    fun delete(clazz: Class<*>, id: Long): Int {\r\n        val db = writableDatabase\r\n        return when (clazz) {\r\n            Exercise::class.java -> db.delete(Exercise.TABLE_NAME, \"${Exercise.ID_COLUMN}=?\", arrayOf(id.toString()))\r\n            Plan::class.java -> {\r\n                // Also delete related exercise plans\r\n                db.delete(ExercisePlan.TABLE_NAME, \"${ExercisePlan.PLAN_ID_COLUMN}=?\", arrayOf(id.toString()))\r\n                db.delete(Plan.TABLE_NAME, \"${Plan.ID_COLUMN}=?\", arrayOf(id.toString()))\r\n            }\r\n            ExercisePlan::class.java -> db.delete(ExercisePlan.TABLE_NAME, \"${ExercisePlan.EXERCISE_ID_COLUMN}=?\", arrayOf(id.toString()))\r\n            else -> 0\r\n        }\r\n    }\r\n\r\n    fun getActivePlan(): Plan? {\r\n        val db = readableDatabase\r\n        val cursor = db.query(\r\n            Plan.TABLE_NAME,\r\n            null,\r\n            \"${Plan.ENABLED_COLUMN}=?\",\r\n            arrayOf(\"1\"),\r\n            null,\r\n            null,\r\n            null\r\n        )\r\n        cursor.use {\r\n            if (it.moveToFirst()) {\r\n                return Plan(\r\n                    it.getLong(it.getColumnIndexOrThrow(Plan.ID_COLUMN)),\r\n                    it.getString(it.getColumnIndexOrThrow(Plan.NAME_COLUMN)),\r\n                    it.getInt(it.getColumnIndexOrThrow(Plan.WEEKS_COLUMN)),\r\n                    it.getInt(it.getColumnIndexOrThrow(Plan.DAYS_PER_WEEK_COLUMN)),\r\n                    it.getInt(it.getColumnIndexOrThrow(Plan.ENABLED_COLUMN)) == 1\r\n                )\r\n            }\r\n        }\r\n        return null\r\n    }\r\n\r\n    fun getExercisesForPlan(planId: Long): List<ExercisePlan> {\r\n        val db = readableDatabase\r\n        val list = mutableListOf<ExercisePlan>()\r\n        val cursor = db.query(\r\n            ExercisePlan.TABLE_NAME,\r\n            null,\r\n            \"${ExercisePlan.PLAN_ID_COLUMN}=?\",\r\n            arrayOf(planId.toString()),\r\n            null,\r\n            null,\r\n            \"${ExercisePlan.DATE_COLUMN} ASC\"\r\n        )\r\n        cursor.use {\r\n            while (it.moveToNext()) {\r\n                list.add(\r\n                    ExercisePlan(\r\n                        it.getLong(it.getColumnIndexOrThrow(ExercisePlan.EXERCISE_ID_COLUMN)),\r\n                        it.getLong(it.getColumnIndexOrThrow(ExercisePlan.PLAN_ID_COLUMN)),\r\n                        it.getInt(it.getColumnIndexOrThrow(ExercisePlan.REPETITIONS_COLUMN)),\r\n                        it.getFloat(it.getColumnIndexOrThrow(ExercisePlan.WEIGHT_COLUMN)),\r\n                        it.getInt(it.getColumnIndexOrThrow(ExercisePlan.SERIES_COLUMN)),\r\n                        Date.valueOf(it.getString(it.getColumnIndexOrThrow(ExercisePlan.DATE_COLUMN)))\r\n                    )\r\n                )\r\n            }\r\n        }\r\n        return list\r\n    }\r\n\r\n    fun setActivePlan(planId: Long) {\r\n        val db = writableDatabase\r\n        try {\r\n            val valuesAll = ContentValues().apply {\r\n                put(Plan.ENABLED_COLUMN, 0)\r\n            }\r\n            db.update(Plan.TABLE_NAME, valuesAll, null, null)\r\n        } catch (e: Exception) {\r\n            e.printStackTrace()\r\n        }\r\n\r\n        val plan = getById(Plan::class.java, planId) as? Plan\r\n        if (plan != null) {\r\n            update(plan.copy(enabled = true))\r\n        }\r\n    }\r\n\r\n    companion object {\r\n        private const val DATABASE_NAME = \"sqlito.db\"\r\n        private const val DATABASE_VERSION = 1\r\n        private const val EXERCISE_NAME = \"exercises\"\r\n        private const val PLAN_NAME = \"plans\"\r\n        private const val EXERCISEPLAN_NAME = \"exercise_plan\"\r\n        private const val SQL_INIT_EXERCISE = \"\"\"\r\n            CREATE TABLE IF NOT EXISTS ${Exercise.TABLE_NAME}(\r\n                ${Exercise.ID_COLUMN} INTEGER PRIMARY KEY AUTOINCREMENT,\r\n                ${Exercise.NAME_COLUMN} TEXT NOT NULL\r\n            );\r\n        \"\"\"\r\n        private const val SQL_INIT_PLAN = \"\"\"\r\n            CREATE TABLE IF NOT EXISTS ${Plan.TABLE_NAME}(\r\n                ${Plan.ID_COLUMN} INTEGER PRIMARY KEY AUTOINCREMENT,\r\n                ${Plan.NAME_COLUMN} TEXT NOT NULL,\r\n                ${Plan.WEEKS_COLUMN} INTEGER NOT NULL,\r\n                ${Plan.DAYS_PER_WEEK_COLUMN} INTEGER NOT NULL,\r\n                ${Plan.ENABLED_COLUMN} INTEGER NOT NULL\r\n            );            \r\n        \"\"\"\r\n        private const val SQL_INIT_EXERCISEPLAN = \"\"\"\r\n            CREATE TABLE  IF NOT EXISTS ${ExercisePlan.TABLE_NAME}(\r\n                ${ExercisePlan.EXERCISE_ID_COLUMN} INTEGER NOT NULL,\r\n                ${ExercisePlan.PLAN_ID_COLUMN} INTEGER NOT NULL,\r\n                ${ExercisePlan.REPETITIONS_COLUMN} INTEGER NOT NULL,\r\n                ${ExercisePlan.WEIGHT_COLUMN} REAL NOT NULL,\r\n                ${ExercisePlan.SERIES_COLUMN} INTEGER NOT NULL,\r\n                ${ExercisePlan.DATE_COLUMN} NUMERIC  NOT NULL,\r\n                PRIMARY KEY(${ExercisePlan.EXERCISE_ID_COLUMN}, ${ExercisePlan.PLAN_ID_COLUMN}, ${ExercisePlan.SERIES_COLUMN}, ${ExercisePlan.DATE_COLUMN}),\r\n                FOREIGN KEY (${ExercisePlan.EXERCISE_ID_COLUMN}) REFERENCES $EXERCISE_NAME(id),\r\n                FOREIGN KEY (${ExercisePlan.PLAN_ID_COLUMN}) REFERENCES $PLAN_NAME(${Plan.ID_COLUMN})\r\n            );            \r\n        \"\"\"\r\n        private const val SQL_DROP_EXERCISE = \"\"\"\r\n            DROP TABLE IF EXISTS $EXERCISE_NAME;\r\n        \"\"\"\r\n        private const val SQL_DROP_PLAN = \"\"\"\r\n            DROP TABLE IF EXISTS $PLAN_NAME;\r\n        \"\"\"\r\n        private const val SQL_DROP_EXERCISEPLAN = \"\"\"\r\n            DROP TABLE IF EXISTS $EXERCISEPLAN_NAME;\r\n        \"\"\"\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../GymApp/app/src/main/java/com/example/gymapp/helper/SQLiteHelper.kt b/../GymApp/app/src/main/java/com/example/gymapp/helper/SQLiteHelper.kt
+--- a/../GymApp/app/src/main/java/com/example/gymapp/helper/SQLiteHelper.kt	(revision 65b9394ffb381445dea1ad0bbe255492b312b79b)
++++ b/../GymApp/app/src/main/java/com/example/gymapp/helper/SQLiteHelper.kt	(date 1776954643483)
+@@ -1,17 +1,13 @@
+ package com.example.gymapp.helper
+ 
+-import android.annotation.SuppressLint
+ import android.content.ContentValues
+ import android.content.Context
+-import android.database.Cursor
+ import android.database.sqlite.SQLiteDatabase
+ import android.database.sqlite.SQLiteOpenHelper
+ import com.example.gymapp.model.Exercise
+ import com.example.gymapp.model.ExercisePlan
+ import com.example.gymapp.model.Plan
+ import java.sql.Date
+-import java.text.DateFormat
+-import java.time.LocalDate
+ 
+ class SQLiteHelper(context: Context) : SQLiteOpenHelper
+     (context, DATABASE_NAME, null, DATABASE_VERSION) {
+Index: ../Cosmos/app/src/main/java/com/example/cosmos/ui/theme/Type.kt
+===================================================================
+diff --git a/../Cosmos/app/src/main/java/com/example/cosmos/ui/theme/Type.kt b/../Cosmos/app/src/main/java/com/example/cosmos/theme/Type.kt
+rename from ../Cosmos/app/src/main/java/com/example/cosmos/ui/theme/Type.kt
+rename to ../Cosmos/app/src/main/java/com/example/cosmos/theme/Type.kt
+--- a/../Cosmos/app/src/main/java/com/example/cosmos/ui/theme/Type.kt	(revision 65b9394ffb381445dea1ad0bbe255492b312b79b)
++++ b/../Cosmos/app/src/main/java/com/example/cosmos/theme/Type.kt	(date 1776875453912)
+@@ -1,4 +1,4 @@
+-package com.example.cosmos.ui.theme
++package com.example.cosmos.theme
+ 
+ import androidx.compose.material3.Typography
+ import androidx.compose.ui.text.TextStyle
+Index: ../Cosmos/app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\">\r\n\r\n    <application\r\n        android:allowBackup=\"true\"\r\n        android:dataExtractionRules=\"@xml/data_extraction_rules\"\r\n        android:fullBackupContent=\"@xml/backup_rules\"\r\n        android:icon=\"@mipmap/ic_launcher\"\r\n        android:label=\"@string/app_name\"\r\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\r\n        android:supportsRtl=\"true\"\r\n        android:theme=\"@style/Theme.Cosmos\">\r\n        <activity\r\n            android:name=\".MainActivity\"\r\n            android:exported=\"true\"\r\n            android:label=\"@string/app_name\"\r\n            android:theme=\"@style/Theme.Cosmos\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\" />\r\n\r\n                <category android:name=\"android.intent.category.LAUNCHER\" />\r\n            </intent-filter>\r\n        </activity>\r\n    </application>\r\n\r\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../Cosmos/app/src/main/AndroidManifest.xml b/../Cosmos/app/src/main/AndroidManifest.xml
+--- a/../Cosmos/app/src/main/AndroidManifest.xml	(revision 65b9394ffb381445dea1ad0bbe255492b312b79b)
++++ b/../Cosmos/app/src/main/AndroidManifest.xml	(date 1776875453904)
+@@ -12,7 +12,7 @@
+         android:supportsRtl="true"
+         android:theme="@style/Theme.Cosmos">
+         <activity
+-            android:name=".MainActivity"
++            android:name=".ui.MainActivity"
+             android:exported="true"
+             android:label="@string/app_name"
+             android:theme="@style/Theme.Cosmos">
+Index: ../Cosmos/app/src/main/java/com/example/cosmos/ui/theme/Theme.kt
+===================================================================
+diff --git a/../Cosmos/app/src/main/java/com/example/cosmos/ui/theme/Theme.kt b/../Cosmos/app/src/main/java/com/example/cosmos/theme/Theme.kt
+rename from ../Cosmos/app/src/main/java/com/example/cosmos/ui/theme/Theme.kt
+rename to ../Cosmos/app/src/main/java/com/example/cosmos/theme/Theme.kt
+--- a/../Cosmos/app/src/main/java/com/example/cosmos/ui/theme/Theme.kt	(revision 65b9394ffb381445dea1ad0bbe255492b312b79b)
++++ b/../Cosmos/app/src/main/java/com/example/cosmos/theme/Theme.kt	(date 1776875453920)
+@@ -1,6 +1,5 @@
+-package com.example.cosmos.ui.theme
++package com.example.cosmos.theme
+ 
+-import android.app.Activity
+ import android.os.Build
+ import androidx.compose.foundation.isSystemInDarkTheme
+ import androidx.compose.material3.MaterialTheme
+Index: app/src/main/java/com/example/tictactoe/ui/TicTacToe.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.tictactoe.ui\r\n\r\nimport android.os.Bundle\r\nimport androidx.activity.enableEdgeToEdge\r\nimport androidx.appcompat.app.AppCompatActivity\r\nimport androidx.core.view.ViewCompat\r\nimport androidx.core.view.WindowInsetsCompat\r\nimport com.example.tictactoe.R\r\n\r\nclass TicTacToe : AppCompatActivity() {\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        enableEdgeToEdge()\r\n        setContentView(R.layout.activity_tictactoe)\r\n        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.tictactoe)) { v, insets ->\r\n            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())\r\n            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)\r\n            insets\r\n        }\r\n    }\r\n}
+===================================================================
+diff --git a/app/src/main/java/com/example/tictactoe/ui/TicTacToe.kt b/app/src/main/java/com/example/tictactoe/ui/TicTacToe.kt
+--- a/app/src/main/java/com/example/tictactoe/ui/TicTacToe.kt	(revision 65b9394ffb381445dea1ad0bbe255492b312b79b)
++++ b/app/src/main/java/com/example/tictactoe/ui/TicTacToe.kt	(date 1777047151623)
+@@ -1,6 +1,7 @@
+ package com.example.tictactoe.ui
+ 
+ import android.os.Bundle
++import android.widget.FrameLayout
+ import androidx.activity.enableEdgeToEdge
+ import androidx.appcompat.app.AppCompatActivity
+ import androidx.core.view.ViewCompat
+@@ -17,5 +18,7 @@
+             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+             insets
+         }
++        val canvasView = TicTacToeBoard(this)
++        val frameLayout = findViewById<FrameLayout>()
+     }
+ }
+\ No newline at end of file

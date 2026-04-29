@@ -4,11 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.view.View
 
-class TicTacToeBoard @JvmOverloads constructor(
-    context: Context,
-    attrs: android.util.AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : View(context, attrs, defStyleAttr) {
+class TicTacToeBoard(context: Context) : View(context) {
 
     private val paint = Paint().apply {
         color = Color.BLACK
@@ -17,7 +13,7 @@ class TicTacToeBoard @JvmOverloads constructor(
         isAntiAlias = true
     }
 
-    private val board = Array(3) { IntArray(3) { 0 } } // 0: empty, 1: X, 2: O
+    private val board = Array(3) { IntArray(3) { 0 } } // 0: vacio, 1: X, 2: Ö
     private var isXTurn = true
 
     override fun onDraw(canvas: Canvas) {
@@ -28,11 +24,11 @@ class TicTacToeBoard @JvmOverloads constructor(
         val cellW = w / 3
         val cellH = h / 3
 
-        // Draw grid lines
-        canvas.drawLine(cellW, 0f, cellW, h, paint)
-        canvas.drawLine(cellW * 2, 0f, cellW * 2, h, paint)
-        canvas.drawLine(0f, cellH, w, cellH, paint)
-        canvas.drawLine(0f, cellH * 2, w, cellH * 2, paint)
+        //Las líneas
+        canvas.drawLine(cellW, 0f, cellW, h, paint) //Vertical izquierda
+        canvas.drawLine(cellW * 2, 0f, cellW * 2, h, paint) //Vertical derecha
+        canvas.drawLine(0f, cellH, w, cellH, paint) //horizontal arriba
+        canvas.drawLine(0f, cellH * 2, w, cellH * 2, paint) //horizontal abajo
 
         // Draw X and O
         for (row in 0..2) {
@@ -44,14 +40,14 @@ class TicTacToeBoard @JvmOverloads constructor(
                 val padding = 40f
 
                 if (board[row][col] == 1) {
-                    // Draw X
+                    // X
                     canvas.drawLine(left + padding, top + padding, right - padding, bottom - padding, paint)
                     canvas.drawLine(right - padding, top + padding, left + padding, bottom - padding, paint)
                 } else if (board[row][col] == 2) {
-                    // Draw O
+                    // Ö
                     val centerX = left + cellW / 2
                     val centerY = top + cellH / 2
-                    val radius = Math.min(cellW, cellH) / 2 - padding
+                    val radius = cellW.coerceAtMost(cellH) / 2 - padding
                     canvas.drawCircle(centerX, centerY, radius, paint)
                 }
             }
@@ -60,9 +56,10 @@ class TicTacToeBoard @JvmOverloads constructor(
 
     override fun onTouchEvent(event: android.view.MotionEvent): Boolean {
         if (event.action == android.view.MotionEvent.ACTION_DOWN) {
+            //calcula el ancho y alto de la casilla
             val cellW = width.toFloat() / 3
             val cellH = height.toFloat() / 3
-
+            //Con esto se determina cual columna y fila se ha escogido
             val col = (event.x / cellW).toInt()
             val row = (event.y / cellH).toInt()
 
