@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:padding="8dp">
+
+    <!-- Header: Turn and Next Turn -->
+    <TextView
+        android:id="@+id/tv_turn_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Turno 13/20"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_next_turn_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Próximo turno: 00:01:67"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_board_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Tablero - posición actual:"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_turn_info" />
+
+    <!-- Board -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_game_board"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/square_border"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_board_title" />
+
+    <!-- Movement Controls -->
+    <TextView
+        android:id="@+id/tv_movement_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Movimiento:"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_game_board" />
+
+    <ImageButton
+        android:id="@+id/btn_move_up"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:backgroundTint="@color/secondary"
+        android:src="@android:drawable/arrow_up_float"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_movement_label" />
+
+    <ImageButton
+        android:id="@+id/btn_move_left"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="@color/secondary"
+        android:src="@android:drawable/arrow_down_float"
+        android:rotation="90"
+        app:layout_constraintEnd_toStartOf="@+id/btn_move_down"
+        app:layout_constraintTop_toBottomOf="@+id/btn_move_up" />
+
+    <ImageButton
+        android:id="@+id/btn_move_down"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:backgroundTint="@color/secondary"
+        android:src="@android:drawable/arrow_down_float"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_move_up" />
+
+    <ImageButton
+        android:id="@+id/btn_move_right"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:backgroundTint="@color/secondary"
+        android:src="@android:drawable/arrow_up_float"
+        android:rotation="90"
+        app:layout_constraintStart_toEndOf="@+id/btn_move_down"
+        app:layout_constraintTop_toBottomOf="@+id/btn_move_up" />
+
+    <Button
+        android:id="@+id/btn_view_resources"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/secondary"
+        android:text="Ver recursos"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/rv_game_board"
+        app:layout_constraintStart_toStartOf="@+id/rv_game_board"
+        app:layout_constraintTop_toBottomOf="@+id/btn_move_down" />
+
+    <!-- Chat -->
+    <TextView
+        android:id="@+id/tv_chat_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Chat del equipo"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_view_resources" />
+
+    <LinearLayout
+        android:id="@+id/chat_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        android:background="#CCCCCC"
+        android:orientation="vertical"
+        android:padding="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/chat_input_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_chat_title">
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[Jaime]: me muero"
+            android:textColor="#00FF00"
+            android:textSize="10sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[Hector]: mala suerte"
+            android:textColor="#00FF00"
+            android:textSize="10sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[Churru]: chicos me voy al baño"
+            android:textColor="#00FF00"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/chat_input_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <EditText
+            android:id="@+id/et_chat_message"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#888888"
+            android:hint="Escribe un mensaje..."
+            android:padding="8dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="12sp" />
+
+        <ImageButton
+            android:id="@+id/btn_send_chat"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:backgroundTint="@color/secondary"
+            android:src="@android:drawable/ic_menu_send" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
