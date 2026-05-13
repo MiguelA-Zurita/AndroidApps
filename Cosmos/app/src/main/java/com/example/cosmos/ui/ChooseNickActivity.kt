@@ -7,11 +7,17 @@ import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.cosmos.R
+import com.example.cosmos.helper.ConfigLoader
+import com.example.cosmos.model.ConfigValues
+import com.google.gson.Gson
 
 class ChooseNickActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choose_nick)
+
+        val jsonString = ConfigLoader().readJSONFromAssets(this, "assets/CosmosConfig.json")
+        val data = Gson().fromJson(jsonString, ConfigValues::class.java)
 
         findViewById<Button>(R.id.btn_accept).setOnClickListener {
             val nick = findViewById<EditText>(R.id.et_nickname).text.toString()

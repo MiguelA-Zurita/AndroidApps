@@ -7,4 +7,11 @@
     </style>
 
     <style name="Theme.Cosmos" parent="Base.Theme.Cosmos" />
+
+    <style name="Theme.Estils_I_Temes.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/black</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/cosmos</item>
+        <item name="windowSplashScreenAnimationDuration">800</item>
+        <item name="postSplashScreenTheme">@style/Base.Theme.Cosmos</item>
+    </style>
 </resources>
