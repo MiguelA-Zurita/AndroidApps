@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Cosmos">
         <activity
-            android:name=".SplashActivity"
+            android:name=".ui.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,22 +20,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".ChooseNickActivity"
+            android:name=".ui.ChooseNickActivity"
             android:exported="false" />
         <activity
-            android:name=".ViewActivity"
+            android:name=".ui.ViewActivity"
             android:exported="false" />
         <activity
-            android:name=".AssignedResourcesActivity"
+            android:name=".ui.AssignedResourcesActivity"
             android:exported="false" />
         <activity
-            android:name=".GameActivity"
+            android:name=".ui.GameActivity"
             android:exported="false" />
         <activity
-            android:name=".CurrentResourcesActivity"
+            android:name=".ui.CurrentResourcesActivity"
             android:exported="false" />
     </application>
 

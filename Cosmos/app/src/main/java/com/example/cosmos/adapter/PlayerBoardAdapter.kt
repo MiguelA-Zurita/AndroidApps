@@ -1,10 +1,11 @@
-package com.example.cosmos
+package com.example.cosmos.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cosmos.R
 
 class PlayerBoardAdapter(private val playerPos: Pair<Int, Int>) : RecyclerView.Adapter<PlayerBoardAdapter.ViewHolder>() {
 

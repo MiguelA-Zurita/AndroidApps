@@ -1,10 +1,13 @@
-package com.example.cosmos
+package com.example.cosmos.ui
 
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cosmos.adapter.BoardAdapter
+import com.example.cosmos.model.BoardCell
+import com.example.cosmos.R
 import java.util.Random
 
 class ViewActivity : AppCompatActivity() {

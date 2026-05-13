@@ -1,4 +1,4 @@
-package com.example.cosmos
+package com.example.cosmos.ui
 
 import android.os.Bundle
 import android.widget.EditText
@@ -6,6 +6,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.cosmos.R
 
 class CurrentResourcesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

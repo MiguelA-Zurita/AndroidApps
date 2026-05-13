@@ -1,6 +1,5 @@
-package com.example.cosmos
+package com.example.cosmos.adapter
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cosmos.model.BoardCell
+import com.example.cosmos.R
 
 class BoardAdapter(private val cells: List<BoardCell>) : RecyclerView.Adapter<BoardAdapter.ViewHolder>() {
 

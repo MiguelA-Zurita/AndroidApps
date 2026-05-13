@@ -1,4 +1,4 @@
-package com.example.cosmos
+package com.example.cosmos.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.cosmos.R
 
 class ChooseNickActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

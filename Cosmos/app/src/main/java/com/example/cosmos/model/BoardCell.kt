@@ -1,4 +1,4 @@
-package com.example.cosmos
+package com.example.cosmos.model
 
 data class BoardCell(
     val teamOwner: Int = 0, // 0: none, 1: blue, 2: red, 3: pink, 4: green
@@ -15,7 +15,7 @@ data class BoardCell(
         return true
     }
 
-    override fun hashCode(): Int {
+    override fun hashCode(): Int { //Creado por el IDE (no se que hace)
         var result = teamOwner
         result = 31 * result + hasPlanet.hashCode()
         result = 31 * result + ships.contentHashCode()
