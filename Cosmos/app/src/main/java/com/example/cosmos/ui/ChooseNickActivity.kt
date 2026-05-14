@@ -16,9 +16,6 @@ class ChooseNickActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choose_nick)
 
-        val jsonString = ConfigLoader().readJSONFromAssets(this, "assets/CosmosConfig.json")
-        val data = Gson().fromJson(jsonString, ConfigValues::class.java)
-
         findViewById<Button>(R.id.btn_accept).setOnClickListener {
             val nick = findViewById<EditText>(R.id.et_nickname).text.toString()
             if (nick.isNotEmpty()) {
