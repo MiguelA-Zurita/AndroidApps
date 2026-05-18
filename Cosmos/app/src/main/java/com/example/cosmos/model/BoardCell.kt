@@ -1,11 +1,11 @@
 package com.example.cosmos.model
 
 data class BoardCell(
-    val teamOwner: Int = 0, // 0: none, 1: blue, 2: red, 3: pink, 4: green
+    val teamOwner: Int = 0, // 0: nada, 1: azul, 2: rojo, 3: verde
     val hasPlanet: Boolean = false,
-    val ships: IntArray = intArrayOf(0, 0, 0, 0) // counts for each team
+    val ships: IntArray = intArrayOf(0, 0, 0, 0) // contador de naves
 ) {
-    override fun equals(other: Any?): Boolean {
+    override fun equals(other: Any?): Boolean { //Creado por el IDE (no se que hace)
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         other as BoardCell

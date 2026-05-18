@@ -1,382 +1,309 @@
-package com.example.gymapp.helper
+package com.example.cosmos.helper
 
-/*
-import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.example.gymapp.model.Exercise
-import com.example.gymapp.model.ExercisePlan
-import com.example.gymapp.model.Plan
-import java.sql.Date
-import java.text.DateFormat
-import java.time.LocalDate
+import android.util.Log
+import com.example.cosmos.model.EstadoTablero
+import com.example.cosmos.model.Nave
+import com.example.cosmos.model.Planetas
+import com.example.cosmos.model.Tripulante
 
-class SQLiteHelper(context: Context) : SQLiteOpenHelper
-    (context, DATABASE_NAME, null, DATABASE_VERSION) {
-    override fun onCreate(db: SQLiteDatabase?) {
-        initTables(db)
+class SQLiteHelper(context: Context, dbName: String) :
+    SQLiteOpenHelper(context, dbName, null, DATABASE_VERSION) {
+
+    companion object {
+        private const val DATABASE_VERSION = 2
+
+        const val TABLE_NAVE = "nave"
+        const val COL_NAVE_ID = "id_nau"
+        const val COL_NAVE_ALIMENTOS = "quantitat_aliments"
+        const val COL_NAVE_ARMAS = "quantitat_armes"
+        const val COL_NAVE_POS_X = "pos_x"
+        const val COL_NAVE_POS_Y = "pos_y"
+
+        const val TABLE_TRIPULANTE = "tripulante"
+        const val COL_TRIP_ID = "id_tripulant"
+        const val COL_TRIP_NAVE_ID = "id_nau"
+        const val COL_TRIP_NOMBRE = "nom"
+        const val COL_TRIP_ESTADO = "estat_vital"
+
+        const val TABLE_ESTADO_TABLERO = "estado_tablero"
+        const val COL_CASELLA_ID = "casella_id"
+        const val COL_PLANETA = "presencia_planeta"
+
+        const val TABLE_PLANETAS = "planetas"
+        const val COL_PLANETA_CELL_ID = "cell_id"
+        const val COL_PLANETA_X = "pos_x"
+        const val COL_PLANETA_Y = "pos_y"
+        const val COL_PLANETA_CASELLA_ID = "casella_id"
+
+        private const val SQL_CREATE_NAVE = """
+            CREATE TABLE $TABLE_NAVE (
+                $COL_NAVE_ID INTEGER PRIMARY KEY,
+                $COL_NAVE_ALIMENTOS INTEGER NOT NULL CHECK($COL_NAVE_ALIMENTOS >= 0),
+                $COL_NAVE_ARMAS INTEGER NOT NULL CHECK($COL_NAVE_ARMAS >= 0),
+                $COL_NAVE_POS_X INTEGER NOT NULL CHECK($COL_NAVE_POS_X BETWEEN 0 AND 9),
+                $COL_NAVE_POS_Y INTEGER NOT NULL CHECK($COL_NAVE_POS_Y BETWEEN 0 AND 9)
+            )
+        """
+
+        private const val SQL_CREATE_TRIPULANTE = """
+            CREATE TABLE $TABLE_TRIPULANTE (
+                $COL_TRIP_ID INTEGER PRIMARY KEY,
+                $COL_TRIP_NAVE_ID INTEGER NOT NULL,
+                $COL_TRIP_NOMBRE TEXT NOT NULL,
+                $COL_TRIP_ESTADO INTEGER NOT NULL CHECK($COL_TRIP_ESTADO IN (0,1)),
+                FOREIGN KEY($COL_TRIP_NAVE_ID) REFERENCES $TABLE_NAVE($COL_NAVE_ID)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_ESTADO_TABLERO = """
+            CREATE TABLE $TABLE_ESTADO_TABLERO (
+                $COL_CASELLA_ID INTEGER PRIMARY KEY CHECK($COL_CASELLA_ID BETWEEN 0 AND 99),
+                $COL_PLANETA INTEGER NOT NULL CHECK($COL_PLANETA IN (0,1))
+            )
+        """
+
+        private const val SQL_CREATE_PLANETAS = """
+            CREATE TABLE $TABLE_PLANETAS (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                $COL_PLANETA_CELL_ID INTEGER NOT NULL,
+                $COL_PLANETA_X INTEGER NOT NULL,
+                $COL_PLANETA_Y INTEGER NOT NULL,
+                $COL_PLANETA_CASELLA_ID INTEGER NOT NULL,
+                FOREIGN KEY($COL_PLANETA_CASELLA_ID) REFERENCES $TABLE_ESTADO_TABLERO($COL_CASELLA_ID)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE
+            )
+        """
     }
 
-    override fun onUpgrade(
-        db: SQLiteDatabase?,
-        oldVersion: Int,
-        newVersion: Int
-    ) {
-        dropTables(db)
-        initTables(db)
+    override fun onCreate(db: SQLiteDatabase) {
+        db.execSQL("PRAGMA foreign_keys=ON")
+        db.execSQL(SQL_CREATE_NAVE)
+        db.execSQL(SQL_CREATE_TRIPULANTE)
+        db.execSQL(SQL_CREATE_ESTADO_TABLERO)
+        db.execSQL(SQL_CREATE_PLANETAS)
     }
 
-    fun initTables(db: SQLiteDatabase?) {
-        db?.execSQL(SQL_INIT_EXERCISE)
-        db?.execSQL(SQL_INIT_PLAN)
-        db?.execSQL(SQL_INIT_EXERCISEPLAN)
-
-        val commonExercises = listOf("Press de banca", "Sentadillas", "Peso muerto", "Press militar", "Dominadas") //Ejercicios que por ahora no se utilizan, pendiente de implementacion
-        commonExercises.forEach { name ->
-            val values = ContentValues().apply {
-                put(Exercise.NAME_COLUMN, name)
-            }
-            db?.insert(Exercise.TABLE_NAME, null, values)
-        }
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_TRIPULANTE")
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_PLANETAS")
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_ESTADO_TABLERO")
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_NAVE")
+        onCreate(db)
     }
 
-    fun dropTables(db: SQLiteDatabase?) {
-        db?.execSQL(SQL_DROP_EXERCISE)
-        db?.execSQL(SQL_DROP_PLAN)
-        db?.execSQL(SQL_DROP_EXERCISEPLAN)
+    override fun onOpen(db: SQLiteDatabase) {
+        super.onOpen(db)
+        db.execSQL("PRAGMA foreign_keys=ON")
     }
 
-    fun insert(o: Any): Long {
+    fun clearAllData() {
         val db = writableDatabase
-        val id: Long
-        ContentValues().apply {
-            when (true) {
-                (o is Exercise) -> {
-                    put(Exercise.NAME_COLUMN, o.name)
-                    id = db.insert(Exercise.TABLE_NAME, null, this)
-                }
-
-                (o is Plan) -> {
-                    put(Plan.NAME_COLUMN, o.name)
-                    put(Plan.WEEKS_COLUMN, o.weeks)
-                    put(Plan.DAYS_PER_WEEK_COLUMN, o.daysPerWeek)
-                    put(Plan.ENABLED_COLUMN, if (o.enabled) 1 else 0)
-                    id = db.insert(Plan.TABLE_NAME, null, this)
-                }
-
-                (o is ExercisePlan) -> {
-                    put(ExercisePlan.EXERCISE_ID_COLUMN, o.exerciseId)
-                    put(ExercisePlan.PLAN_ID_COLUMN, o.planId)
-                    put(ExercisePlan.REPETITIONS_COLUMN, o.repetitions)
-                    put(ExercisePlan.WEIGHT_COLUMN, o.weight)
-                    put(ExercisePlan.SERIES_COLUMN, o.seriesNo)
-                    put(ExercisePlan.DATE_COLUMN, o.date.toString())
-                    id = db.insert(ExercisePlan.TABLE_NAME, null, this)
-                }
-
-                else -> {
-                    id = 0L
-                }
-            }
-        }
-        return id
-    }
-
-    fun getAll(clazz: Class<*>): List<Any> {
-        val db = readableDatabase
-        val list: MutableList<Any> = mutableListOf()
-        val cursor = when (clazz) {
-            Exercise::class.java -> db.rawQuery("SELECT * FROM ${Exercise.TABLE_NAME}", null)
-            Plan::class.java -> db.rawQuery("SELECT * FROM ${Plan.TABLE_NAME}", null)
-            ExercisePlan::class.java -> db.rawQuery(
-                "SELECT * FROM ${ExercisePlan.TABLE_NAME}",
-                null
-            )
-
-            else -> null
-        }
-        cursor.use { cursor ->
-            if (cursor != null) {
-                while (cursor.moveToNext()) {
-                    when (clazz) {
-                        Exercise::class.java -> list.add(
-                            Exercise(
-                                cursor.getLong(cursor.getColumnIndexOrThrow(Exercise.ID_COLUMN)),
-                                cursor.getString(cursor.getColumnIndexOrThrow(Exercise.NAME_COLUMN))
-                            )
-                        )
-
-                        Plan::class.java -> list.add(
-                            Plan(
-                                cursor.getLong(cursor.getColumnIndexOrThrow(Plan.ID_COLUMN)),
-                                cursor.getString(cursor.getColumnIndexOrThrow(Plan.NAME_COLUMN)),
-                                cursor.getInt(cursor.getColumnIndexOrThrow(Plan.WEEKS_COLUMN)),
-                                cursor.getInt(cursor.getColumnIndexOrThrow(Plan.DAYS_PER_WEEK_COLUMN)),
-                                cursor.getInt(cursor.getColumnIndexOrThrow(Plan.ENABLED_COLUMN)) == 1
-                            )
-                        )
-
-                        ExercisePlan::class.java -> list.add(
-                            ExercisePlan(
-                                cursor.getLong(cursor.getColumnIndexOrThrow(ExercisePlan.EXERCISE_ID_COLUMN)),
-                                cursor.getLong(cursor.getColumnIndexOrThrow(ExercisePlan.PLAN_ID_COLUMN)),
-                                cursor.getInt(cursor.getColumnIndexOrThrow(ExercisePlan.REPETITIONS_COLUMN)),
-                                cursor.getFloat(cursor.getColumnIndexOrThrow(ExercisePlan.WEIGHT_COLUMN)),
-                                cursor.getInt(cursor.getColumnIndexOrThrow(ExercisePlan.SERIES_COLUMN)),
-                                Date.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ExercisePlan.DATE_COLUMN)))
-                            )
-                        )
-                    }
-                }
-            }
-        }
-        return list
-    }
-
-    fun getById(clazz: Class<*>, id: Long): Any? {
-        val db = readableDatabase
-        val cursor = when (clazz) {
-            Exercise::class.java -> db.query(
-                Exercise.TABLE_NAME,
-                arrayOf(Exercise.ID_COLUMN, Exercise.NAME_COLUMN),
-                "${Exercise.ID_COLUMN}=?",
-                arrayOf(id.toString()),
-                null,
-                null,
-                "${Exercise.ID_COLUMN} DESC"
-            )
-
-            Plan::class.java -> db.query(
-                Plan.TABLE_NAME,
-                arrayOf(
-                    Plan.ID_COLUMN,
-                    Plan.NAME_COLUMN,
-                    Plan.WEEKS_COLUMN,
-                    Plan.DAYS_PER_WEEK_COLUMN,
-                    Plan.ENABLED_COLUMN
-                ),
-                "${Plan.ID_COLUMN}=?",
-                arrayOf(id.toString()),
-                null,
-                null,
-                "${Plan.ID_COLUMN} DESC"
-            )
-
-            ExercisePlan::class.java -> db.query(
-                ExercisePlan.TABLE_NAME,
-                arrayOf(
-                    ExercisePlan.EXERCISE_ID_COLUMN,
-                    ExercisePlan.PLAN_ID_COLUMN,
-                    ExercisePlan.REPETITIONS_COLUMN,
-                    ExercisePlan.WEIGHT_COLUMN,
-                    ExercisePlan.SERIES_COLUMN,
-                    ExercisePlan.DATE_COLUMN
-                ),
-                "${ExercisePlan.EXERCISE_ID_COLUMN}=?",
-                arrayOf(id.toString()),
-                null,
-                null,
-                "${ExercisePlan.EXERCISE_ID_COLUMN} DESC"
-            )
-            else -> null
-        }
-        if (cursor != null && cursor.moveToFirst()) {
-            return when (clazz) {
-                Exercise::class.java -> Exercise(
-                    cursor.getLong(
-                        cursor.getColumnIndexOrThrow(
-                            Exercise.ID_COLUMN
-                        )
-                    ), cursor.getString(cursor.getColumnIndexOrThrow(Exercise.NAME_COLUMN))
-                )
-
-                Plan::class.java -> Plan(
-                    cursor.getLong(cursor.getColumnIndexOrThrow(Plan.ID_COLUMN)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(Plan.NAME_COLUMN)),
-                    cursor.getInt(cursor.getColumnIndexOrThrow(Plan.WEEKS_COLUMN)),
-                    cursor.getInt(cursor.getColumnIndexOrThrow(Plan.DAYS_PER_WEEK_COLUMN)),
-                    cursor.getInt(cursor.getColumnIndexOrThrow(Plan.ENABLED_COLUMN)) == 1
-                )
-
-                ExercisePlan::class.java -> ExercisePlan(
-                    cursor.getLong(cursor.getColumnIndexOrThrow(ExercisePlan.EXERCISE_ID_COLUMN)),
-                    cursor.getLong(cursor.getColumnIndexOrThrow(ExercisePlan.PLAN_ID_COLUMN)),
-                    cursor.getInt(cursor.getColumnIndexOrThrow(ExercisePlan.REPETITIONS_COLUMN)),
-                    cursor.getFloat(cursor.getColumnIndexOrThrow(ExercisePlan.WEIGHT_COLUMN)),
-                    cursor.getInt(cursor.getColumnIndexOrThrow(ExercisePlan.SERIES_COLUMN)),
-                    Date.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ExercisePlan.DATE_COLUMN)))
-                )
-                else -> null
-            }
-        }
-        else return null
-    }
-
-    fun update(o: Any): Int {
-        val db = writableDatabase
-        val rows = when (o) {
-            is Exercise -> {
-                val values = ContentValues().apply {
-                    put(Exercise.NAME_COLUMN, o.name)
-                }
-                db.update(
-                    Exercise.TABLE_NAME,
-                    values,
-                    "${Exercise.ID_COLUMN}=?",
-                    arrayOf(o.id.toString())
-                )
-            }
-
-            is Plan -> {
-                val values = ContentValues().apply {
-                    put(Plan.NAME_COLUMN, o.name)
-                    put(Plan.WEEKS_COLUMN, o.weeks)
-                    put(Plan.DAYS_PER_WEEK_COLUMN, o.daysPerWeek)
-                    put(Plan.ENABLED_COLUMN, if (o.enabled) 1 else 0)
-                }
-                db.update(
-                    Plan.TABLE_NAME,
-                    values,
-                    "${Plan.ID_COLUMN}=?",
-                    arrayOf(o.id.toString())
-                )
-            }
-
-            is ExercisePlan -> {
-                val values = ContentValues().apply {
-                    put(ExercisePlan.REPETITIONS_COLUMN, o.repetitions)
-                    put(ExercisePlan.WEIGHT_COLUMN, o.weight)
-                }
-                db.update(
-                    ExercisePlan.TABLE_NAME,
-                    values,
-                    "${ExercisePlan.EXERCISE_ID_COLUMN}=? AND ${ExercisePlan.PLAN_ID_COLUMN}=? AND ${ExercisePlan.SERIES_COLUMN}=? AND ${ExercisePlan.DATE_COLUMN}=?",
-                    arrayOf(
-                        o.exerciseId.toString(),
-                        o.planId.toString(),
-                        o.seriesNo.toString(),
-                        o.date.toString()
-                    )
-                )
-            }
-            else -> 0
-        }
-        return rows
-    }
-
-    fun delete(clazz: Class<*>, id: Long): Int {
-        val db = writableDatabase
-        return when (clazz) {
-            Exercise::class.java -> db.delete(Exercise.TABLE_NAME, "${Exercise.ID_COLUMN}=?", arrayOf(id.toString()))
-            Plan::class.java -> {
-                // Also delete related exercise plans
-                db.delete(ExercisePlan.TABLE_NAME, "${ExercisePlan.PLAN_ID_COLUMN}=?", arrayOf(id.toString()))
-                db.delete(Plan.TABLE_NAME, "${Plan.ID_COLUMN}=?", arrayOf(id.toString()))
-            }
-            ExercisePlan::class.java -> db.delete(ExercisePlan.TABLE_NAME, "${ExercisePlan.EXERCISE_ID_COLUMN}=?", arrayOf(id.toString()))
-            else -> 0
+        try {
+            db.beginTransaction()
+            db.delete(TABLE_TRIPULANTE, null, null)
+            db.delete(TABLE_PLANETAS, null, null)
+            db.delete(TABLE_ESTADO_TABLERO, null, null)
+            db.delete(TABLE_NAVE, null, null)
+            db.setTransactionSuccessful()
+        } catch (e: Exception) {
+            Log.d("SQLiteHelper", "Error clearing data: ${e.message}")
+        } finally {
+            db.endTransaction()
         }
     }
 
-    fun getActivePlan(): Plan? {
+    fun getShipById(shipId: Int): Nave? {
         val db = readableDatabase
         val cursor = db.query(
-            Plan.TABLE_NAME,
-            null,
-            "${Plan.ENABLED_COLUMN}=?",
-            arrayOf("1"),
+            TABLE_NAVE,
+            arrayOf(
+                COL_NAVE_ID,
+                COL_NAVE_ALIMENTOS,
+                COL_NAVE_ARMAS,
+                COL_NAVE_POS_X,
+                COL_NAVE_POS_Y
+            ),
+            "$COL_NAVE_ID = ?",
+            arrayOf(shipId.toString()),
             null,
             null,
             null
         )
-        cursor.use {
-            if (it.moveToFirst()) {
-                return Plan(
-                    it.getLong(it.getColumnIndexOrThrow(Plan.ID_COLUMN)),
-                    it.getString(it.getColumnIndexOrThrow(Plan.NAME_COLUMN)),
-                    it.getInt(it.getColumnIndexOrThrow(Plan.WEEKS_COLUMN)),
-                    it.getInt(it.getColumnIndexOrThrow(Plan.DAYS_PER_WEEK_COLUMN)),
-                    it.getInt(it.getColumnIndexOrThrow(Plan.ENABLED_COLUMN)) == 1
+
+        var ship: Nave? = null
+
+        cursor.use { c ->
+            if (c.moveToFirst()) {
+                val idIndex = c.getColumnIndexOrThrow(COL_NAVE_ID)
+                val foodIndex = c.getColumnIndexOrThrow(COL_NAVE_ALIMENTOS)
+                val weaponsIndex = c.getColumnIndexOrThrow(COL_NAVE_ARMAS)
+                val posXIndex = c.getColumnIndexOrThrow(COL_NAVE_POS_X)
+                val posYIndex = c.getColumnIndexOrThrow(COL_NAVE_POS_Y)
+
+                ship = Nave(
+                    idNau = c.getInt(idIndex),
+                    quantitatAliments = c.getInt(foodIndex),
+                    quantitatArmes = c.getInt(weaponsIndex),
+                    posX = c.getInt(posXIndex),
+                    posY = c.getInt(posYIndex)
                 )
             }
         }
-        return null
+
+        db.close()
+        return ship
     }
 
-    fun getExercisesForPlan(planId: Long): List<ExercisePlan> {
+    fun updateShip(ship: Nave): Int {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COL_NAVE_ID, ship.idNau)
+            put(COL_NAVE_ALIMENTOS, ship.quantitatAliments)
+            put(COL_NAVE_ARMAS, ship.quantitatArmes)
+            put(COL_NAVE_POS_X, ship.posX)
+            put(COL_NAVE_POS_Y, ship.posY)
+        }
+
+        val rows = db.replace(TABLE_NAVE, null, values)
+
+        db.close()
+        return rows.toInt()
+    }
+
+    fun updateCrewMember(crewMember: Tripulante): Int {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COL_TRIP_ID, crewMember.idTripulant)
+            put(COL_TRIP_NAVE_ID, crewMember.idNau)
+            put(COL_TRIP_NOMBRE, crewMember.nom)
+            put(COL_TRIP_ESTADO, if (crewMember.estatVital) 1 else 0)
+        }
+
+        val rows = db.replace(TABLE_TRIPULANTE, null, values)
+
+        db.close()
+        return rows.toInt()
+    }
+
+    fun getCrewMembersByShip(nauId: Int): List<Tripulante> {
         val db = readableDatabase
-        val list = mutableListOf<ExercisePlan>()
         val cursor = db.query(
-            ExercisePlan.TABLE_NAME,
-            null,
-            "${ExercisePlan.PLAN_ID_COLUMN}=?",
-            arrayOf(planId.toString()),
-            null,
-            null,
-            "${ExercisePlan.DATE_COLUMN} ASC"
+            TABLE_TRIPULANTE,
+            arrayOf(COL_TRIP_ID, COL_TRIP_NOMBRE, COL_TRIP_ESTADO),
+            "$COL_TRIP_NAVE_ID = ?",
+            arrayOf(nauId.toString()),
+            null, null, null
         )
-        cursor.use {
-            while (it.moveToNext()) {
-                list.add(
-                    ExercisePlan(
-                        it.getLong(it.getColumnIndexOrThrow(ExercisePlan.EXERCISE_ID_COLUMN)),
-                        it.getLong(it.getColumnIndexOrThrow(ExercisePlan.PLAN_ID_COLUMN)),
-                        it.getInt(it.getColumnIndexOrThrow(ExercisePlan.REPETITIONS_COLUMN)),
-                        it.getFloat(it.getColumnIndexOrThrow(ExercisePlan.WEIGHT_COLUMN)),
-                        it.getInt(it.getColumnIndexOrThrow(ExercisePlan.SERIES_COLUMN)),
-                        Date.valueOf(it.getString(it.getColumnIndexOrThrow(ExercisePlan.DATE_COLUMN)))
+        val crewMembers = mutableListOf<Tripulante>()
+        cursor.use { c ->
+            while (c.moveToNext()) {
+                crewMembers.add(
+                    Tripulante(
+                        idTripulant = c.getInt(c.getColumnIndexOrThrow(COL_TRIP_ID)),
+                        idNau = nauId,
+                        nom = c.getString(c.getColumnIndexOrThrow(COL_TRIP_NOMBRE)),
+                        estatVital = c.getInt(c.getColumnIndexOrThrow(COL_TRIP_ESTADO)) == 1
                     )
                 )
             }
         }
+        return crewMembers
+    }
+
+    private fun getPlanetsByCell(db: SQLiteDatabase, cellId: Int): List<Planetas> {
+        val planets = mutableListOf<Planetas>()
+        val cursor = db.query(
+            TABLE_PLANETAS,
+            arrayOf(COL_PLANETA_CELL_ID, COL_PLANETA_X, COL_PLANETA_Y),
+            "$COL_PLANETA_CASELLA_ID = ?",
+            arrayOf(cellId.toString()),
+            null, null, null
+        )
+        cursor.use { c ->
+            while (c.moveToNext()) {
+                planets.add(
+                    Planetas(
+                        cellId = c.getInt(c.getColumnIndexOrThrow(COL_PLANETA_CELL_ID)),
+                        x = c.getInt(c.getColumnIndexOrThrow(COL_PLANETA_X)),
+                        y = c.getInt(c.getColumnIndexOrThrow(COL_PLANETA_Y))
+                    )
+                )
+            }
+        }
+        return planets
+    }
+
+    fun getAllBoardStatus(): List<EstadoTablero> {
+        val db = readableDatabase
+        val list = mutableListOf<EstadoTablero>()
+
+        val cursor = db.query(
+            TABLE_ESTADO_TABLERO,
+            arrayOf(COL_CASELLA_ID, COL_PLANETA),
+            null, null, null, null,
+            "$COL_CASELLA_ID ASC"
+        )
+
+        cursor.use { c ->
+            val cellIndex = c.getColumnIndexOrThrow(COL_CASELLA_ID)
+            val planetIndex = c.getColumnIndexOrThrow(COL_PLANETA)
+
+            while (c.moveToNext()) {
+                val cellId = c.getInt(cellIndex)
+                list.add(
+                    EstadoTablero(
+                        idNau = cellId,
+                        planeta = c.getInt(planetIndex) == 1,
+                        planetas = getPlanetsByCell(db, cellId)
+                    )
+                )
+            }
+        }
+
+        db.close()
         return list
     }
 
-    fun setActivePlan(planId: Long) {
+    fun updateOrInsertAllBoardStatus(boardStatusList: List<EstadoTablero>) {
         val db = writableDatabase
         try {
-            val valuesAll = ContentValues().apply {
-                put(Plan.ENABLED_COLUMN, 0)
+            db.beginTransaction()
+            boardStatusList.forEach { status ->
+                val values = ContentValues().apply {
+                    put(COL_CASELLA_ID, status.idNau)
+                    put(COL_PLANETA, if (status.planeta) 1 else 0)
+                }
+                db.replace(TABLE_ESTADO_TABLERO, null, values)
+
+                db.delete(
+                    TABLE_PLANETAS,
+                    "$COL_PLANETA_CASELLA_ID = ?",
+                    arrayOf(status.idNau.toString())
+                )
+                status.planetas.forEach { planet ->
+                    val pValues = ContentValues().apply {
+                        put(COL_PLANETA_CELL_ID, planet.cellId)
+                        put(COL_PLANETA_X, planet.x)
+                        put(COL_PLANETA_Y, planet.y)
+                        put(COL_PLANETA_CASELLA_ID, status.idNau)
+                    }
+                    db.insert(TABLE_PLANETAS, null, pValues)
+                }
             }
-            db.update(Plan.TABLE_NAME, valuesAll, null, null)
+            db.setTransactionSuccessful()
         } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        val plan = getById(Plan::class.java, planId) as? Plan
-        if (plan != null) {
-            update(plan.copy(enabled = true))
+            Log.d("SQLiteHelper", "Error upserting board status: ${e.message}")
+        } finally {
+            db.endTransaction()
+            db.close()
         }
     }
 
-    companion object {
-        private const val DATABASE_NAME = "sqlito.db"
-        private const val DATABASE_VERSION = 1
-        private const val EXERCISE_NAME = "exercises"
-        private const val PLAN_NAME = "plans"
-        private const val EXERCISEPLAN_NAME = "exercise_plan"
-        private const val SQL_INIT_EXERCISE = """
-
-        """
-        private const val SQL_INIT_PLAN = """
-
-
-        """
-        private const val SQL_INIT_EXERCISEPLAN = """
-
-
-        """
-        private const val SQL_DROP_EXERCISE = """
-            DROP TABLE IF EXISTS $EXERCISE_NAME;
-        """
-        private const val SQL_DROP_PLAN = """
-            DROP TABLE IF EXISTS $PLAN_NAME;
-        """
-        private const val SQL_DROP_EXERCISEPLAN = """
-            DROP TABLE IF EXISTS $EXERCISEPLAN_NAME;
-        """
-    }
-}*/
+}

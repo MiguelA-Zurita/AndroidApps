@@ -36,9 +36,11 @@ android {
 }
 
 dependencies {
+    implementation("androidx.datastore:datastore-preferences:1.2.1")
     implementation(libs.retrofit)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.converter.gson)
     implementation(libs.gson)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.activity.ktx)

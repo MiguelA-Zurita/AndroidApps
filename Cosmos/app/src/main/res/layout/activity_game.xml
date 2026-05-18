@@ -12,7 +12,7 @@
         android:id="@+id/tv_turn_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Turno 13/20"
+        android:text="@string/app_name"
         android:textColor="@color/white"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +22,7 @@
         android:id="@+id/tv_next_turn_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Próximo turno: 00:01:67"
+        android:text="@string/app_name"
         android:textColor="@color/white"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Tablero - posición actual:"
+        android:text="@string/board_position_title"
         android:textColor="@color/white"
         android:textSize="14sp"
         android:textStyle="bold"
@@ -57,7 +57,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Movimiento:"
+        android:text="@string/movement_label"
         android:textColor="@color/white"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -105,25 +105,28 @@
         app:layout_constraintStart_toEndOf="@+id/btn_move_down"
         app:layout_constraintTop_toBottomOf="@+id/btn_move_up" />
 
+    <!-- Chat -->
     <Button
         android:id="@+id/btn_view_resources"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:backgroundTint="@color/secondary"
-        android:text="Ver recursos"
+        android:text="@string/view_resources"
         android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="@+id/rv_game_board"
-        app:layout_constraintStart_toStartOf="@+id/rv_game_board"
-        app:layout_constraintTop_toBottomOf="@+id/btn_move_down" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.173"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_move_left" />
 
-    <!-- Chat -->
     <TextView
         android:id="@+id/tv_chat_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Chat del equipo"
+        android:text="@string/team_chat_title"
         android:textColor="@color/white"
         android:textSize="12sp"
         android:textStyle="bold"
@@ -141,27 +144,7 @@
         app:layout_constraintBottom_toTopOf="@+id/chat_input_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_chat_title">
-        
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="[Jaime]: me muero"
-            android:textColor="#00FF00"
-            android:textSize="10sp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="[Hector]: mala suerte"
-            android:textColor="#00FF00"
-            android:textSize="10sp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="[Churru]: chicos me voy al baño"
-            android:textColor="#00FF00"
-            android:textSize="10sp" />
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/tv_chat_title"/>
 
     <LinearLayout
         android:id="@+id/chat_input_container"
@@ -178,7 +161,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#888888"
-            android:hint="Escribe un mensaje..."
+            android:hint="@string/chat_hint"
             android:padding="8dp"
             android:textColor="@color/white"
             android:textColorHint="@color/white"

@@ -21,7 +21,7 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Recursos actuales"
+        android:text="@string/current_resources"
         android:textColor="@color/white"
         android:textSize="28sp"
         android:textStyle="bold"
@@ -47,7 +47,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tripulacion"
+                android:text="@string/crew"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold|italic" />
@@ -58,104 +58,19 @@
                 android:layout_marginTop="4dp"
                 android:background="@color/white" />
 
-            <!-- Crew Items -->
-            <LinearLayout
+            <!-- Crew RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_crew_members"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal">
-                <TextView
-                    android:id="@+id/tv_crew1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Capitan: Jaume"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
-                <TextView
-                    android:id="@+id/btn_edit_crew1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="[editar]"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:orientation="horizontal">
-                <TextView
-                    android:id="@+id/tv_crew2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Navegador: Hector"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
-                <TextView
-                    android:id="@+id/btn_edit_crew2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="[editar]"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:orientation="horizontal">
-                <TextView
-                    android:id="@+id/tv_crew3"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Ingeniero: Namzug"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
-                <TextView
-                    android:id="@+id/btn_edit_crew3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="[editar]"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:orientation="horizontal">
-                <TextView
-                    android:id="@+id/tv_crew4"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Artillero: Churru"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
-                <TextView
-                    android:id="@+id/btn_edit_crew4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="[editar]"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                android:layout_marginTop="8dp" />
 
             <TextView
+                android:id="@+id/tv_current_food"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Alimentos"
+                android:text="@string/food_label"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold|italic" />
@@ -167,18 +82,11 @@
                 android:background="@color/white" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Raciones x20\nAgua x15\nVitaminas x8"
-                android:textColor="@color/white"
-                android:textSize="14sp" />
-
-            <TextView
+                android:id="@+id/tv_current_weapons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Armas"
+                android:text="@string/weapons_label"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold|italic" />
@@ -188,14 +96,6 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="4dp"
                 android:background="@color/white" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Cañón láser x3\nTorpedos x5\nEscudo x2\nBomba Nuclear x1"
-                android:textColor="@color/white"
-                android:textSize="14sp" />
 
         </LinearLayout>
     </ScrollView>

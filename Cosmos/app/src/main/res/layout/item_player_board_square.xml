@@ -2,14 +2,29 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="30dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/square_border">
+
+    <ImageView
+        android:id="@+id/iv_planet"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:src="@drawable/planeta"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.58"
+        app:layout_constraintHeight_percent="0.58"/>
 
     <TextView
         android:id="@+id/tv_marker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="T"
+        android:text="@string/player_marker"
         android:textColor="@color/yellow"
         android:textSize="18sp"
         android:textStyle="bold"

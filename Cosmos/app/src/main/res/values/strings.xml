@@ -1,3 +1,61 @@
 <resources>
     <string name="app_name">Cosmos</string>
+
+    <!-- General -->
+    <string name="accept">Aceptar</string>
+    <string name="save">Guardar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
+    <string name="error">Error</string>
+    <string name="perfect">¡Perfecto!</string>
+
+    <!-- MainActivity -->
+    <string name="play">Jugar</string>
+    <string name="spectate">Espectar</string>
+    <string name="ready_to_conquer">¿Preparado para conquistar?</string>
+    <string name="start_game_confirmation">¿Estás seguro que deseas empezar a jugar?</string>
+
+    <!-- ChooseNickActivity -->
+    <string name="choose_nick_title">¡Escoge tu nick!</string>
+    <string name="enter_nick_instruction">Introduce un nombre para jugar:</string>
+    <string name="nick_hint">Tu nick...</string>
+    <string name="error_message_format">Error: %s</string>
+
+    <!-- AssignedResourcesActivity & CurrentResourcesActivity -->
+    <string name="assigned_resources">Recursos asignados</string>
+    <string name="current_resources">Recursos actuales</string>
+    <string name="crew">Tripulacion</string>
+    <string name="food_label">Alimentos : 10</string>
+    <string name="weapons_label">Armas : 5</string>
+    <string name="food_format">Comida: %d</string>
+    <string name="weapons_format">Armas: %d</string>
+    <string name="start">Comenzar</string>
+    <string name="edit_member_title">Editar nombre de %s</string>
+
+    <!-- GameActivity -->
+    <string name="turn_format">Turno %d/20</string>
+    <string name="next_turn_format">Próximo turno: %s</string>
+    <string name="board_position_title">Tablero - posición actual:</string>
+    <string name="movement_label">Movimiento:</string>
+    <string name="view_resources">Ver recursos</string>
+    <string name="team_chat_title">Chat del equipo</string>
+    <string name="chat_hint">Escribe un mensaje...</string>
+    <string name="chat_message_format">[Tú]: %s</string>
+
+    <!-- ViewActivity -->
+    <string name="poosmos">POOsmos</string>
+    <string name="teams">Equipos:</string>
+    <string name="team_squares_format">● Equipo %d: %d casillas</string>
+
+    <!-- Dialogs & Items -->
+    <string name="team_assigned_title">Equipo asignado</string>
+    <string name="assigned_to_message">Has sido asignado al:</string>
+    <string name="edit_label">[editar]</string>
+    <string name="captain_format">Capitan: %s</string>
+    <string name="player_marker">T</string>
+    <string name="crew_member_1">Tripulante 1</string>
+    <string name="crew_member_2">Tripulante 2</string>
+    <string name="crew_member_3">Tripulante 3</string>
+
 </resources>

@@ -12,10 +12,12 @@ material = "1.13.0"
 activityKtx = "1.13.0"
 constraintlayout = "2.2.1"
 retrofit = "3.0.0"
+datastoreCore = "1.2.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -27,6 +29,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+androidx-datastore-core = { group = "androidx.datastore", name = "datastore-core", version.ref = "datastoreCore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

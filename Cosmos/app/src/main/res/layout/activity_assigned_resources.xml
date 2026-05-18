@@ -11,7 +11,7 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Recursos asignados"
+        android:text="@string/assigned_resources"
         android:textColor="@color/white"
         android:textSize="28sp"
         android:textStyle="bold"
@@ -37,7 +37,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tripulacion"
+                android:text="@string/crew"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold|italic" />
@@ -48,19 +48,19 @@
                 android:layout_marginTop="4dp"
                 android:background="@color/white" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Crew RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_crew_members"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Capitan - Jaime de Martiri\nNavegador - Lucas estampado\nIngeniero - Alberto el pozo\nArtillero - Helen la piedra\nMedico - Magdalena Capoeira\nAgricultor - Angela la loba alfa"
-                android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:layout_marginTop="8dp" />
 
             <TextView
+                android:id="@+id/tv_food"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Alimentos"
+                android:text="@string/food_label"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold|italic" />
@@ -72,18 +72,11 @@
                 android:background="@color/white" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Raciones x20\nAgua x15\nProvisiones x10"
-                android:textColor="@color/white"
-                android:textSize="14sp" />
-
-            <TextView
+                android:id="@+id/tv_weapons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Armas"
+                android:text="@string/weapons_label"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold|italic" />
@@ -93,14 +86,6 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="4dp"
                 android:background="@color/white" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Cañón láser x3\nTorpedos x5\nEscudo Deflector x2\nBomba Nuclear x1"
-                android:textColor="@color/white"
-                android:textSize="14sp" />
 
         </LinearLayout>
     </ScrollView>
@@ -110,7 +95,7 @@
         android:layout_width="200dp"
         android:layout_height="60dp"
         android:backgroundTint="@color/primary"
-        android:text="Comenzar"
+        android:text="@string/start"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

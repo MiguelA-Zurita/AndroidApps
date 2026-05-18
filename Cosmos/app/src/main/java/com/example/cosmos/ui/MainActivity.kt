@@ -36,12 +36,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun showStartGameDialog() {
         AlertDialog.Builder(this)
-            .setMessage("¿Estás seguro que deseas empezar a jugar?")
-            .setPositiveButton("Sí") { _, _ ->
+            .setMessage(R.string.start_game_confirmation)
+            .setPositiveButton(R.string.yes) { _, _ ->
                 val intent = Intent(this, ChooseNickActivity::class.java)
                 startActivity(intent)
             }
-            .setNegativeButton("No", null)
+            .setNegativeButton(R.string.no, null)
             .show()
     }
 }
