@@ -11,7 +11,7 @@ data class Nave(
 data class Tripulante(
     val idTripulant: Int,
     val idNau: Int,
-    val nom: String,
+    var nom: String,
     val estatVital: Boolean
 )
 

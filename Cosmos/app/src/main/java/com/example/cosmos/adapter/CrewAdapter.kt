@@ -6,9 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cosmos.R
+import com.example.cosmos.model.Tripulante
 
 class CrewAdapter(
-    private val crewMembers: List<String?>,
+    private val crewMembers: List<Tripulante>,
     private val onEditClick: (Int) -> Unit
 ) : RecyclerView.Adapter<CrewAdapter.ViewHolder>() {
 
@@ -23,7 +24,7 @@ class CrewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.tvCrewName.text = crewMembers[position]
+        holder.tvCrewName.text = crewMembers[position].nom
         holder.btnEditCrew.setOnClickListener {
             onEditClick(position)
         }

@@ -1,8 +1,10 @@
 package com.example.cosmos.ui
 
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -17,16 +19,19 @@ import com.example.cosmos.R
 import com.example.cosmos.helper.ConfigManager
 import com.example.cosmos.helper.DataStoreHelper
 import com.example.cosmos.helper.DatabaseProvider
+import com.example.cosmos.helper.MyStatusRequester
 import com.example.cosmos.helper.RetrofitHelper
 import com.example.cosmos.model.EstadoTablero
 import com.example.cosmos.model.MyStatusResponseDto
 import com.example.cosmos.model.Nave
 import com.example.cosmos.model.Tripulante
 import com.example.cosmos.repository.CosmosRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -74,16 +79,17 @@ class GameActivity : AppCompatActivity() {
         lifecycleScope.launch {
             while (isActive) {
                 try {
-                    val myStatusData =
-                        repository.getMyStatus(DataStoreHelper.getShipID(this@GameActivity).toInt())
+                    val myStatusData = repository.getMyStatus(DataStoreHelper.getShipID(this@GameActivity).toInt())
 
                     val gameData = repository.getGameBoard()
 
-                    syncDatabase(myStatusData)
+                    withContext(Dispatchers.IO) {
+                        syncDatabase(myStatusData)
+                    }
 
                     updateBoard()
 
-                    val nextTurnInstant = Instant.parse(myStatusData.timestamp_proxim_torn)
+                    val nextTurnInstant = Instant.parse(gameData.timestamp_proxim_torn)
 
                     findViewById<TextView>(R.id.tv_turn_info).text =
                         getString(R.string.turn_format, gameData.torn_actual)
@@ -124,6 +130,7 @@ class GameActivity : AppCompatActivity() {
                     )
 
                 canMove = true
+                delay(1000)
             }
         }
     }
@@ -133,55 +140,80 @@ class GameActivity : AppCompatActivity() {
         if (msg.isNotEmpty()) {
             val tv = TextView(this)
             tv.text = getString(R.string.chat_message_format, msg)
-            val textColor = intent.getStringExtra("team").let { team ->
-                when (team) {
-                    "azul" -> Color.BLUE
-                    "rojo" -> Color.RED
-                    "verde" -> Color.GREEN
-                    else -> Color.BLACK
+
+            lifecycleScope.launch {
+                val textColor = DataStoreHelper.getTeamColor(this@GameActivity).let { team ->
+                    when (team) {
+                        "azul" -> Color.BLUE
+                        "rojo" -> Color.RED
+                        "verde" -> Color.GREEN
+                        else -> Color.BLACK
+                    }
                 }
+                tv.setTextColor(textColor)
             }
-            tv.setTextColor(textColor)
             tv.textSize = 13f
             chatContainer.addView(tv)
             etMessage.text.clear()
         }
     }
 
-    private suspend fun updateBoard() {
-        val db = DatabaseProvider.create(this)
+    private suspend fun updateBoard() = withContext(Dispatchers.IO) {
 
-        db.getShipById(DataStoreHelper.getShipID(this@GameActivity).toInt())?.let { ship ->
-            playerX = ship.posX
-            playerY = ship.posY
-        }
+        val db = DatabaseProvider.create(this@GameActivity)
+        try {
 
-        val planetsPos = mutableListOf<Pair<Int, Int>>()
-        db.getAllBoardStatus().forEach { status ->
-            status.takeIf { it.planeta }?.let {
-                planetsPos.add(it.x to it.y)
+            db.getShipById(DataStoreHelper.getShipID(this@GameActivity).toInt())?.let { ship ->
+                playerX = ship.posX
+                playerY = ship.posY
             }
-        }
 
-        adapter.updateData(playerX to playerY, planetsPos)
+            var isShipAlive = false
+            db.getCrewMembersByShip(DataStoreHelper.getShipID(this@GameActivity).toInt()).forEach { crewMember ->
+                if (crewMember.estatVital) {
+                    isShipAlive = true
+                }
+            }
+
+            val planetsPos = mutableListOf<Pair<Int, Int>>()
+            db.getAllBoardStatus().forEach { status ->
+                status.takeIf { it.planeta }?.let {
+                    planetsPos.add(it.x to it.y)
+                }
+            }
+
+            withContext(Dispatchers.Main) {
+                if (!isShipAlive) {
+                    gameOver()
+                }
+
+                adapter.updateData(playerX to playerY, planetsPos)
+            }
+        } catch (e: Exception) {
+            Log.d("GameActivity", "Error updating board: ${e.message} ")
+        }
     }
 
     private fun addMovementListeners() {
         findViewById<ImageButton>(R.id.btn_move_up).setOnClickListener {
-                movePlayer("UP")
-                canMove = false
+            if (!canMove) return@setOnClickListener
+            movePlayer("UP")
+            canMove = false
         }
         findViewById<ImageButton>(R.id.btn_move_down).setOnClickListener {
-                movePlayer("DOWN")
-                canMove = false
+            if (!canMove) return@setOnClickListener
+            movePlayer("DOWN")
+            canMove = false
         }
         findViewById<ImageButton>(R.id.btn_move_left).setOnClickListener {
-                movePlayer("LEFT")
-                canMove = false
+            if (!canMove) return@setOnClickListener
+            movePlayer("LEFT")
+            canMove = false
         }
         findViewById<ImageButton>(R.id.btn_move_right).setOnClickListener {
-                movePlayer("RIGHT")
-                canMove = false
+            if (!canMove) return@setOnClickListener
+            movePlayer("RIGHT")
+            canMove = false
         }
     }
 
@@ -221,7 +253,29 @@ class GameActivity : AppCompatActivity() {
     }
 
     fun movePlayer(direction: String) = lifecycleScope.launch {
-        val shipId = DataStoreHelper.getShipID(this@GameActivity).toInt()
-        repository.move(shipId, direction)
+        try {
+            val shipId = DataStoreHelper.getShipID(this@GameActivity).toInt()
+            repository.move(shipId, direction)
+        } catch (e: Exception) {
+            Log.d("GameActivity", "Error moving player: ${e.message} ")
+        }
+    }
+
+    fun gameOver(){
+        Dialog(this).apply {
+            setContentView(R.layout.dialog_game_over)
+            setCancelable(false)
+            findViewById<Button>(R.id.btn_play_again).setOnClickListener {
+                dismiss()
+                startActivity(Intent(context, ChooseNickActivity::class.java))
+                finish()
+            }
+            findViewById<Button>(R.id.btn_back_to_main).setOnClickListener {
+                dismiss()
+                startActivity(Intent(context, MainActivity::class.java))
+                finish()
+            }
+            show()
+        }
     }
 }

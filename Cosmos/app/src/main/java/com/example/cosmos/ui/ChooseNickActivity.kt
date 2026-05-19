@@ -108,6 +108,7 @@ class ChooseNickActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             DataStoreHelper.saveShipID(this@ChooseNickActivity, data.id_nau)
+            DataStoreHelper.saveTeamColor(this@ChooseNickActivity, data.equip)
         }
 
 

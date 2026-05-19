@@ -57,5 +57,8 @@
     <string name="crew_member_1">Tripulante 1</string>
     <string name="crew_member_2">Tripulante 2</string>
     <string name="crew_member_3">Tripulante 3</string>
+    <string name="game_over">¡Game over!</string>
+    <string name="play_again">Jugar de nuevo</string>
+    <string name="back_to_main">Volver al inicio</string>
 
 </resources>

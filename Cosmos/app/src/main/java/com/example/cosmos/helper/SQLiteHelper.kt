@@ -32,7 +32,6 @@ class SQLiteHelper(context: Context, dbName: String) :
         const val COL_CASELLA_ID = "casella_id"
         const val COL_PLANETA = "presencia_planeta"
 
-        const val TABLE_PLANETAS = "planetas"
         const val COL_PLANETA_CELL_ID = "cell_id"
         const val COL_PLANETA_X = "pos_x"
         const val COL_PLANETA_Y = "pos_y"
@@ -81,10 +80,9 @@ class SQLiteHelper(context: Context, dbName: String) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_TRIPULANTE")
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_PLANETAS")
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_ESTADO_TABLERO")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_NAVE")
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_TRIPULANTE")
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_ESTADO_TABLERO")
         onCreate(db)
     }
 
@@ -96,16 +94,11 @@ class SQLiteHelper(context: Context, dbName: String) :
     fun clearAllData() {
         val db = writableDatabase
         try {
-            db.beginTransaction()
             db.delete(TABLE_TRIPULANTE, null, null)
-            db.delete(TABLE_PLANETAS, null, null)
-            db.delete(TABLE_ESTADO_TABLERO, null, null)
             db.delete(TABLE_NAVE, null, null)
-            db.setTransactionSuccessful()
+            db.delete(TABLE_ESTADO_TABLERO, null, null)
         } catch (e: Exception) {
             Log.d("SQLiteHelper", "Error clearing data: ${e.message}")
-        } finally {
-            db.endTransaction()
         }
     }
 
@@ -167,19 +160,46 @@ class SQLiteHelper(context: Context, dbName: String) :
         return rows.toInt()
     }
 
-    fun updateCrewMember(crewMember: Tripulante): Int {
+    fun updateCrewMember(crewMember: Tripulante?): Int {
         val db = writableDatabase
         val values = ContentValues().apply {
-            put(COL_TRIP_ID, crewMember.idTripulant)
-            put(COL_TRIP_NAVE_ID, crewMember.idNau)
-            put(COL_TRIP_NOMBRE, crewMember.nom)
-            put(COL_TRIP_ESTADO, if (crewMember.estatVital) 1 else 0)
+            put(COL_TRIP_ID, crewMember?.idTripulant)
+            put(COL_TRIP_NAVE_ID, crewMember?.idNau)
+            put(COL_TRIP_NOMBRE, crewMember?.nom)
+            put(COL_TRIP_ESTADO, if (crewMember?.estatVital == true) 1 else 0)
         }
 
         val rows = db.replace(TABLE_TRIPULANTE, null, values)
 
         db.close()
         return rows.toInt()
+    }
+
+    fun getCrewMember(crewId: Int): Tripulante? {
+        val db = readableDatabase
+        val cursor = db.query(
+            TABLE_TRIPULANTE,
+            arrayOf(COL_TRIP_ID, COL_TRIP_NAVE_ID, COL_TRIP_NOMBRE, COL_TRIP_ESTADO),
+            "$COL_TRIP_ID = ?",
+            arrayOf(crewId.toString()),
+            null, null, null
+        )
+
+        var crewMember: Tripulante? = null
+
+        cursor.use { c ->
+            if (c.moveToFirst()) {
+                crewMember = Tripulante(
+                    idTripulant = c.getInt(c.getColumnIndexOrThrow(COL_TRIP_ID)),
+                    idNau = c.getInt(c.getColumnIndexOrThrow(COL_TRIP_NAVE_ID)),
+                    nom = c.getString(c.getColumnIndexOrThrow(COL_TRIP_NOMBRE)),
+                    estatVital = c.getInt(c.getColumnIndexOrThrow(COL_TRIP_ESTADO)) == 1
+                )
+            }
+        }
+
+        db.close()
+        return crewMember
     }
 
     fun getCrewMembersByShip(nauId: Int): List<Tripulante> {
@@ -189,7 +209,7 @@ class SQLiteHelper(context: Context, dbName: String) :
             arrayOf(COL_TRIP_ID, COL_TRIP_NOMBRE, COL_TRIP_ESTADO),
             "$COL_TRIP_NAVE_ID = ?",
             arrayOf(nauId.toString()),
-            null, null, null
+            null, null, "$COL_TRIP_ID ASC"
         )
         val crewMembers = mutableListOf<Tripulante>()
         cursor.use { c ->
