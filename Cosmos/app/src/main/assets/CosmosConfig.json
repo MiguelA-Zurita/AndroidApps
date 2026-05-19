@@ -10,8 +10,5 @@
   "localPersistence": {
     "driver": "sqlite",
     "path": "data/cosmos.db"
-  },
-  "playerSettings": {
-    "nauID": null
   }
 }

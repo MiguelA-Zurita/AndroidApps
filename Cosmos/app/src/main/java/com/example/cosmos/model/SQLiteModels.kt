@@ -16,13 +16,9 @@ data class Tripulante(
 )
 
 data class EstadoTablero(
-    val idNau: Int,
+    val casellaId: Int,
+    val nauID: Int,
     val planeta: Boolean,
-    val planetas: List<Planetas>,
-)
-
-data class Planetas(
-    val cellId: Int,
     val x: Int,
-    val y: Int
+    val y: Int,
 )

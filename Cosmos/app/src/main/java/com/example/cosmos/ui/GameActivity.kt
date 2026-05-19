@@ -15,12 +15,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cosmos.adapter.PlayerBoardAdapter
 import com.example.cosmos.R
 import com.example.cosmos.helper.ConfigManager
+import com.example.cosmos.helper.DataStoreHelper
 import com.example.cosmos.helper.DatabaseProvider
 import com.example.cosmos.helper.RetrofitHelper
 import com.example.cosmos.model.EstadoTablero
 import com.example.cosmos.model.MyStatusResponseDto
 import com.example.cosmos.model.Nave
-import com.example.cosmos.model.Planetas
 import com.example.cosmos.model.Tripulante
 import com.example.cosmos.repository.CosmosRepository
 import kotlinx.coroutines.Job
@@ -31,9 +31,11 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 class GameActivity : AppCompatActivity() {
     private var playerX = 5
     private var playerY = 5
+    private var canMove = true
     private lateinit var adapter: PlayerBoardAdapter
     private lateinit var repository: CosmosRepository
     private var countdownJob: Job? = null
@@ -57,10 +59,6 @@ class GameActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btn_view_resources).setOnClickListener {
             val intent = Intent(this, CurrentResourcesActivity::class.java)
-            intent.putExtra("nauID", intent.getIntExtra("nauID", -1))
-            intent.putExtra("crew", intent.getStringArrayExtra("crew"))
-            intent.putExtra("food", intent.getIntExtra("food", 0))
-            intent.putExtra("weapons", intent.getIntExtra("weapons", 0))
             startActivity(intent)
         }
 
@@ -72,27 +70,27 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    @OptIn(ExperimentalTime::class)
     private fun startPeriodicUpdate() {
         lifecycleScope.launch {
             while (isActive) {
                 try {
-                    val shipID = intent.getIntExtra("nauID", -1)
+                    val myStatusData =
+                        repository.getMyStatus(DataStoreHelper.getShipID(this@GameActivity).toInt())
 
-                    val myStatusData = repository.getMyStatus(shipID)
                     val gameData = repository.getGameBoard()
 
                     syncDatabase(myStatusData)
 
                     updateBoard()
 
-                    val nextTurnInstant = Instant.parse(gameData.timestamp_proxim_torn)
+                    val nextTurnInstant = Instant.parse(myStatusData.timestamp_proxim_torn)
 
                     findViewById<TextView>(R.id.tv_turn_info).text =
                         getString(R.string.turn_format, gameData.torn_actual)
 
                     startCountdown(nextTurnInstant)
-                    delay(5000)
+
+                    delay(10000)
                 } catch (e: Exception) {
                     delay(5000)
                 }
@@ -109,7 +107,8 @@ class GameActivity : AppCompatActivity() {
                 val remaining = targetInstant.toEpochMilliseconds() - now.toEpochMilliseconds()
 
                 if (remaining <= 0) {
-                    findViewById<TextView>(R.id.tv_next_turn_time).text = getString(R.string.next_turn_format, "00:00:00")
+                    findViewById<TextView>(R.id.tv_next_turn_time).text =
+                        getString(R.string.next_turn_format, "00:00:00")
                     break
                 }
 
@@ -119,15 +118,14 @@ class GameActivity : AppCompatActivity() {
                 val seconds = secondsTotal % 60
 
                 findViewById<TextView>(R.id.tv_next_turn_time).text =
-                    getString(R.string.next_turn_format, String.format("%02d:%02d:%02d", hours, minutes, seconds))
+                    getString(
+                        R.string.next_turn_format,
+                        String.format("%02d:%02d:%02d", hours, minutes, seconds)
+                    )
 
-                delay(1000)
+                canMove = true
             }
         }
-    }
-
-    private fun updatePlayer() {
-        adapter.updatePlayerPos(playerX to playerY)
     }
 
     private fun sendMessage(etMessage: EditText, chatContainer: LinearLayout) {
@@ -150,48 +148,40 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateBoard() {
+    private suspend fun updateBoard() {
         val db = DatabaseProvider.create(this)
-        
-        db.getShipById(intent.getIntExtra("nauID", -1))?.let { ship ->
+
+        db.getShipById(DataStoreHelper.getShipID(this@GameActivity).toInt())?.let { ship ->
             playerX = ship.posX
             playerY = ship.posY
         }
-        
+
         val planetsPos = mutableListOf<Pair<Int, Int>>()
         db.getAllBoardStatus().forEach { status ->
-            status.planetas.forEach { planet ->
-                planetsPos.add(planet.x to planet.y)
+            status.takeIf { it.planeta }?.let {
+                planetsPos.add(it.x to it.y)
             }
         }
-        
+
         adapter.updateData(playerX to playerY, planetsPos)
     }
 
     private fun addMovementListeners() {
         findViewById<ImageButton>(R.id.btn_move_up).setOnClickListener {
-            if (playerY > 0) {
-                playerY--
-                updatePlayer()
-            }
+                movePlayer("UP")
+                canMove = false
         }
         findViewById<ImageButton>(R.id.btn_move_down).setOnClickListener {
-            if (playerY < 9) {
-                playerY++
-                updatePlayer()
-            }
+                movePlayer("DOWN")
+                canMove = false
         }
         findViewById<ImageButton>(R.id.btn_move_left).setOnClickListener {
-            if (playerX > 0) {
-                playerX--
-                updatePlayer()
-            }
+                movePlayer("LEFT")
+                canMove = false
         }
         findViewById<ImageButton>(R.id.btn_move_right).setOnClickListener {
-            if (playerX < 9) {
-                playerX++
-                updatePlayer()
-            }
+                movePlayer("RIGHT")
+                canMove = false
         }
     }
 
@@ -218,19 +208,20 @@ class GameActivity : AppCompatActivity() {
             db.updateCrewMember(crewMemberDB)
         }
 
-        val boardStatusEntity = EstadoTablero(
-            idNau = data.id_nau,
-            planeta = data.planeta,
-            planetas = data.planetes.map { planet ->
-                Planetas(
-                    cellId = planet.cellId,
-                    x = planet.x,
-                    y = planet.y
-                )
-            }
-        )
+        data.planetes.forEach { planet ->
+            val boardStatusEntity = EstadoTablero(
+                nauID = data.id_nau,
+                casellaId = planet.cellId,
+                planeta = data.planeta,
+                x = planet.x,
+                y = planet.y
+            )
+            db.updateOrInsertBoardStatus(boardStatusEntity)
+        }
+    }
 
-        db.updateOrInsertAllBoardStatus(listOf(boardStatusEntity))
-
+    fun movePlayer(direction: String) = lifecycleScope.launch {
+        val shipId = DataStoreHelper.getShipID(this@GameActivity).toInt()
+        repository.move(shipId, direction)
     }
 }
